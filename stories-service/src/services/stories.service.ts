@@ -2,16 +2,17 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { StoryDto } from '../dto/story.dto';
 import { CreateStoryDto } from '../dto/create-story.dto';
+import { IStoriesInterface } from '../interfaces/stories.interface';
 
 @Injectable()
-export class StoriesService {
+export class StoriesService implements IStoriesInterface {
   private readonly logger = new Logger(StoriesService.name);
 
   constructor(private prisma: PrismaService) {}
 
   async searchStories(query: string): Promise<StoryDto[] | []> {
     this.logger.log(`Searching for stories with query ${query}`);
-    return await this.prisma.user.findMany({
+    return this.prisma.story.findMany({
       where: {
         OR: [{ title: { contains: query } }, { user: { contains: query } }],
       },

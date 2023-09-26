@@ -11,16 +11,21 @@ import {
   Delete,
   HttpException,
   HttpStatus,
+  Inject,
 } from '@nestjs/common';
 
 import { StoriesService } from '../services/stories.service';
 import { StoryDto } from '../dto/story.dto';
 import { CreateStoryDto } from '../dto/create-story.dto';
+import {IStoriesInterface} from "../interfaces/stories.interface";
 
 @Controller('/stories')
 export class StoriesController {
   private readonly logger = new Logger(StoriesController.name);
-  constructor(private readonly storiesService: StoriesService) {}
+  constructor(
+    @Inject(StoriesService.name)
+    private readonly storiesService: IStoriesInterface,
+  ) {}
 
   @Get('search')
   async searchStories(@Query('query') query: string) {

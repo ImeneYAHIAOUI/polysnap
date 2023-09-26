@@ -1,5 +1,5 @@
 export class StoryDto {
-  id: string;
+  id: number;
   title: string;
   user: string;
   format: string;
