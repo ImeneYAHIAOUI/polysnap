@@ -39,7 +39,7 @@ export class UserService implements IUserService {
     this.logger.log(`Searching for users with query ${query}`);
     return await this.prisma.user.findMany({
       where: {
-        title: { contains: query },
+        username: { contains: query },
       },
       take: 10,
       select: {

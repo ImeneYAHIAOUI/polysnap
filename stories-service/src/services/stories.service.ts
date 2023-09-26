@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { StoryDto } from '../dto/story.dto';
-import {Story} from "../schema/story.schema";
-import {CreateStoryDto} from "../dto/create-story.dto";
+import { Story } from '../schema/story.schema';
+import { CreateStoryDto } from '../dto/create-story.dto';
 
 @Injectable()
 export class StoriesService {
@@ -14,7 +14,7 @@ export class StoriesService {
     this.logger.log(`Searching for stories with query ${query}`);
     return await this.prisma.user.findMany({
       where: {
-        username: { contains: query },
+        OR: [{ title: { contains: query } }, { user: { contains: query } }],
       },
       take: 10,
       select: {
@@ -43,7 +43,4 @@ export class StoriesService {
 
     return createdStory;
   }
-
-
-
 }

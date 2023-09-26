@@ -23,7 +23,7 @@ export class StoriesController {
   constructor(private readonly storiesService: StoriesService) {}
 
   @Get('search')
-  async searchStories(@Query('query') query: string): Promise<StoryDto[]> {
+  async searchStories(@Query('query') query: string) {
     this.logger.log(`Received search request for ${query}`);
     if (!query)
       throw new HttpException('Provide a valid query', HttpStatus.BAD_REQUEST);
