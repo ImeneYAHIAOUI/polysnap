@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
 import { StoryDto } from '../dto/story.dto';
-import { Story } from '../schema/story.schema';
 import { CreateStoryDto } from '../dto/create-story.dto';
 
 @Injectable()
@@ -16,9 +15,8 @@ export class StoriesService {
       where: {
         OR: [{ title: { contains: query } }, { user: { contains: query } }],
       },
-      take: 10,
       select: {
-        _id: true,
+        id: true,
         title: true,
         user: true,
         format: true,
@@ -37,6 +35,7 @@ export class StoriesService {
         user: createStoryDto.user,
         format: createStoryDto.format,
         size: createStoryDto.size,
+        views: 0,
         videoUrl: createStoryDto.videoUrl,
       },
     });

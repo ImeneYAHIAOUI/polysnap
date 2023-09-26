@@ -1,5 +1,5 @@
 export class Story {
-  _id: string;
+  id: string;
   title: string;
   user: string;
   views: number;
