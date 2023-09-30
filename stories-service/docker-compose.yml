@@ -16,11 +16,11 @@ services:
     image: polysnap/stories-service
     container_name: stories-app
     environment:
-      DB_HOST: postgres
-      DB_PORT: 5432
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
+      POSTGRESQL_ADDON_HOST: postgres
+      POSTGRESQL_ADDON_PORT: 5432
+      POSTGRESQL_ADDON_USER: ${DB_USERNAME}
+      POSTGRESQL_ADDON_PASSWORD: ${DB_PASSWORD}
+      POSTGRESQL_ADDON_DB: ${DB_NAME}
     ports:
       - "8080:8080"
     depends_on:

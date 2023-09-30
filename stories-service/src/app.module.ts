@@ -7,11 +7,11 @@ import { StoryModule } from './story.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST,
+      host: process.env.POSTGRESQL_ADDON_HOST,
       port: 5432,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      username: process.env.POSTGRESQL_ADDON_USER,
+      password: process.env.POSTGRESQL_ADDON_PASSWORD,
+      database: process.env.POSTGRESQL_ADDON_DB,
       entities: [join(__dirname, '**/**.entity{.ts,.js}')],
       synchronize: true,
     }),
