@@ -1,20 +1,48 @@
-# Use an official Node.js runtime as the base image
-FROM node:14
+###################
+# BUILD FOR LOCAL DEVELOPMENT
+###################
 
-# Set the working directory in the container
-WORKDIR /app
+FROM node:16.16.0-alpine As development
 
-# Copy package.json and package-lock.json to the container
-COPY package*.json ./
+WORKDIR /usr/src/app
 
-# Install application dependencies
-RUN npm install
+COPY --chown=node:node package*.json ./
 
-# Copy the rest of the application source code to the container
-COPY . .
+RUN npm ci
 
-# Expose the port on which your NestJS application is running (default is 3000)
-EXPOSE 3000
+COPY --chown=node:node . .
 
-# Define the command to start your NestJS application
-CMD ["npm", "start"]
+USER node
+
+###################
+# BUILD FOR PRODUCTION
+###################
+
+FROM node:16.16.0-alpine As build
+
+WORKDIR /usr/src/app
+
+COPY --chown=node:node package*.json ./
+
+COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
+
+COPY --chown=node:node . .
+
+RUN npm run build
+
+ENV NODE_ENV production
+
+RUN npm ci --only=production && npm cache clean --force
+
+USER node
+
+###################
+# PRODUCTION
+###################
+
+FROM node:16.16.0-alpine As production
+
+COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
+COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+
+CMD [ "node", "dist/main.js" ]
