@@ -1,12 +1,17 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { AppService } from './app.service';
 
-@Controller()
+
+@Controller('messages')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Post()
+  async createMessage(
+    @Body() messageData: { topicName: string; message: string },
+  ) {
+    const { topicName, message } = messageData;
+    await this.appService.publishMessage(topicName, message);
+    return 'Message published';
   }
 }
