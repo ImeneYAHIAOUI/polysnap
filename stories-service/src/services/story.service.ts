@@ -3,7 +3,7 @@ import { StoryDto } from '../dto/story.dto';
 import { CreateStoryDto } from '../dto/create-story.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
-import { Story } from '../enteties/story.entity';
+import { Story } from '../entities/story.entity';
 
 @Injectable()
 export class StoryService {

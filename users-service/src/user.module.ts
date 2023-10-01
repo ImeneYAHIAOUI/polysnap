@@ -1,22 +1,11 @@
-import { Logger, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { UsersController } from './controllers/user.controller';
 import { UserService } from './services/user.service';
-import { PrismaModule, loggingMiddleware } from 'nestjs-prisma';
+import { User } from './entities/user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Contact } from './entities/contact.entity';
 
 @Module({
-  imports: [
-    PrismaModule.forRoot({
-      isGlobal: true,
-      prismaServiceOptions: {
-        middlewares: [
-          loggingMiddleware({
-            logger: new Logger('PrismaMiddleware'),
-            logLevel: 'log',
-          }),
-        ],
-      },
-    }),
-  ],
   controllers: [UsersController],
   providers: [
     {
@@ -24,11 +13,6 @@ import { PrismaModule, loggingMiddleware } from 'nestjs-prisma';
       useClass: UserService,
     },
   ],
-  exports: [
-    {
-      provide: UserService.name,
-      useClass: UserService,
-    },
-  ],
+  imports: [TypeOrmModule.forFeature([User, Contact])],
 })
 export class UsersModule {}

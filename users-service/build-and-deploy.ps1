@@ -3,22 +3,22 @@ $env:PROJECT_ID = "platinum-factor-367914"
 $env:REGION = "europe-southwest1"
 $env:CONNECTION_NAME = "platinum-factor-367914:us-central1:story-db"
 
-$env:POSTGRESQL_ADDON_DB = "b3yug4mjuoclssjomcpv"
-$env:POSTGRESQL_ADDON_HOST = "b3yug4mjuoclssjomcpv-postgresql.services.clever-cloud.com"
-$env:POSTGRESQL_ADDON_PASSWORD = "1wBQNomsPzqQopMb7xw7yFPwbI5bBD"
+$env:POSTGRESQL_ADDON_DB = "bbo5kfyhzvsmduxrawr9"
+$env:POSTGRESQL_ADDON_HOST = "bbo5kfyhzvsmduxrawr9-postgresql.services.clever-cloud.com"
+$env:POSTGRESQL_ADDON_PASSWORD = "SkWJLymRn40DwryfoZvbO2rXxhNNew"
 $env:POSTGRESQL_ADDON_PORT = "5432"
-$env:POSTGRESQL_ADDON_URI = "postgresql://u15hz7orbqutuaqocjrg:1wBQNomsPzqQopMb7xw7yFPwbI5bBD@b3yug4mjuoclssjomcpv-postgresql.services.clever-cloud.com:5432/b3yug4mjuoclssjomcpv"
-$env:POSTGRESQL_ADDON_USER = "u15hz7orbqutuaqocjrg"
+$env:POSTGRESQL_ADDON_URI = "postgresql://utl06gakq5vgivmez5yl:SkWJLymRn40DwryfoZvbO2rXxhNNew@bbo5kfyhzvsmduxrawr9-postgresql.services.clever-cloud.com:5432/bbo5kfyhzvsmduxrawr9"
+$env:POSTGRESQL_ADDON_USER = "utl06gakq5vgivmez5yl"
 $env:POSTGRESQL_ADDON_VERSION = "11"
 
 # Build and submit the Docker image
 gcloud builds submit `
-  --tag "gcr.io/$env:PROJECT_ID/stories-service" `
+  --tag "gcr.io/$env:PROJECT_ID/users-service" `
   --project $env:PROJECT_ID
 
 # Deploy to Google Cloud Run with PostgreSQL environment variables
-gcloud run deploy stories-service `
-  --image "gcr.io/$env:PROJECT_ID/stories-service" `
+gcloud run deploy users-service `
+  --image "gcr.io/$env:PROJECT_ID/users-service" `
   --platform managed `
   --region $env:REGION `
   --allow-unauthenticated `
