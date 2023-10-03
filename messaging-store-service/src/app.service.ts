@@ -8,10 +8,10 @@ export class AppService {
   private pubsub: PubSub;
 
   constructor() {
-    const keyFilename = 'src/poly-chat-400414-79a5abb83393.json';
+    //const keyFilename = 'src/poly-chat-400414-79a5abb83393.json';
 
     // Create the Pub/Sub client with the provided key file
-    this.pubsub = new PubSub({ keyFilename });
+    this.pubsub = new PubSub();
 
   }
 
