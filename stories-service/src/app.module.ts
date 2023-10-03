@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { StoryModule } from './story.module';
 import { StorageModule } from './storage.module';
-
+import { UsersProxyService } from './services/users-service-proxy/user-service-proxy.service';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -21,6 +21,6 @@ import { StorageModule } from './storage.module';
     StorageModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [UsersProxyService],
 })
 export class AppModule {}
