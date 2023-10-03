@@ -1,25 +1,16 @@
-import 'reflect-metadata';
-import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { NestExpressApplication } from '@nestjs/platform-express';
+const HOST = '0.0.0.0';
+const PORT = Number(process.env.PORT) || 8080;
 
 async function bootstrap() {
-  const { PORT } = process.env;
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.setGlobalPrefix('api');
-  app.enableCors({ origin: ['http://localhost:3000'], credentials: true });
-  app.useGlobalPipes(new ValidationPipe());
-  app.set('trust proxy', 'loopback');
-  try {
-    await app.listen(PORT, () => {
-      console.log(`Running on Port ${PORT}`);
-      console.log(
-        `Running in ${process.env.ENVIRONMENT} mode: ${process.env.ENVIRONMENT_MESSAGE}`,
-      );
-    });
-  } catch (err) {
-    console.log(err);
-  }
+  const app = await NestFactory.create(AppModule);
+  app.enableCors();
+  await app.listen(PORT, HOST).then(() => {
+    // tslint:disable-next-line:no-console
+    console.log(
+      `** Nest Live Development Server is listening on ${HOST}:${PORT}, open your browser on http://localhost:${PORT}/ **`,
+    );
+  });
 }
 bootstrap();

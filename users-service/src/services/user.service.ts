@@ -1,5 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { User } from '../schema/user.schema';
+import { User } from '../entities/user.entity';
+import { Repository, Like } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import {
   SignUpDetails,
@@ -10,58 +12,49 @@ import { IUserService } from '../interfaces/user.interface';
 import { UserAlreadyExists } from 'src/exceptions/UserAlreadyExists';
 import { UserNotFoundException } from 'src/exceptions/UserNotFound';
 import { ContactAlreadyExists } from 'src/exceptions/ContactAlreadyExists';
-import { PrismaService } from 'nestjs-prisma';
+import { Contact } from '../entities/contact.entity';
 
 @Injectable()
 export class UserService implements IUserService {
   private readonly logger = new Logger(UserService.name);
 
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+    @InjectRepository(Contact)
+    private contactRepository: Repository<Contact>,
+  ) {}
 
   async signUp(userDetails: SignUpDetails): Promise<User> {
     this.logger.log(`Signing up user ${userDetails.username}`);
-    const existingUser = await this.prisma.user.findFirst({
-      where: {
-        OR: [{ username: userDetails.username }, { email: userDetails.email }],
-      },
+    const existingUser = await this.usersRepository.findOne({
+      where: [{ username: userDetails.username }, { email: userDetails.email }],
     });
     if (existingUser) {
       this.logger.error(`User ${userDetails.username} already exists`);
       throw new UserAlreadyExists();
     }
-    const params = { ...userDetails };
-    return await this.prisma.user.create({
-      data: params,
-    });
+    const user = this.usersRepository.create(userDetails);
+    return await this.usersRepository.save(user);
   }
 
-  async findUsers(query: string): Promise<User[] | []> {
+  async findUsers(query: string): Promise<User[]> {
     this.logger.log(`Searching for users with query ${query}`);
-    return await this.prisma.user.findMany({
-      where: {
-        username: { contains: query },
-      },
+    return await this.usersRepository.find({
+      where: { username: Like(`%${query}%`) },
       take: 10,
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-      },
+      select: ['id', 'username', 'email', 'firstName', 'lastName'],
     });
   }
 
   async lookUpUser(findUserParams: LookUpUserParams): Promise<User> {
     this.logger.log(`Looking up user ${JSON.stringify(findUserParams)}`);
-    const user = await this.prisma.user.findFirst({
-      where: {
-        OR: [
-          { id: findUserParams.id },
-          { email: findUserParams.email },
-          { username: findUserParams.username },
-        ],
-      },
+    const user = await this.usersRepository.findOne({
+      where: [
+        { id: findUserParams.id },
+        { email: findUserParams.email },
+        { username: findUserParams.username },
+      ],
     });
     if (!user) {
       this.logger.error(`User ${JSON.stringify(findUserParams)} not found`);
@@ -73,7 +66,7 @@ export class UserService implements IUserService {
   async addContact(addContactParams: AddContactParams): Promise<User> {
     this.logger.log(`Adding contact ${JSON.stringify(addContactParams)}`);
 
-    const user = this.prisma.user.findUnique({
+    const user = await this.usersRepository.findOne({
       where: { id: addContactParams.userId },
     });
 
@@ -82,26 +75,24 @@ export class UserService implements IUserService {
       throw new UserNotFoundException();
     }
 
-    const contact = await this.prisma.contact.findUnique({
+    const contactExists = await this.contactRepository.findOne({
       where: {
-        userId_contactId: {
-          userId: addContactParams.userId,
-          contactId: addContactParams.contactId,
-        },
+        userId: addContactParams.userId,
+        contactId: addContactParams.contactId,
       },
     });
 
-    if (contact) {
+    if (contactExists) {
       this.logger.error(`Contact ${addContactParams.contactId} already exists`);
       throw new ContactAlreadyExists();
     }
 
-    await this.prisma.contact.create({
-      data: {
-        contactId: addContactParams.contactId,
-        userId: addContactParams.userId,
-      },
+    const newContact = this.contactRepository.create({
+      userId: addContactParams.userId,
+      contactId: addContactParams.contactId,
     });
+
+    await this.contactRepository.save(newContact);
 
     return user;
   }

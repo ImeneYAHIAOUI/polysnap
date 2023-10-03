@@ -1,28 +1,20 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Post,Get,Query, UploadedFile, UseInterceptors,Logger } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { StorageService } from '../services/storage.service';
 
-@Controller()
+@Controller('storage')
 export class StorageController {
-  constructor(private readonly storageService: StorageService) {}
+  private readonly logger = new Logger(StorageController.name);
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
-    },
-  })
-  async uploadMedia(@UploadedFile() file: Express.Multer.File) {
-    const bucketName = 'stories_polysnap_bucket';
-    await this.storageService.uploadFile(bucketName, file.originalname, file.buffer);
-  }
+  constructor(private readonly storageService: StorageService) {}
+   @Get('uploadUrl')
+    async getUploadUrl(@Query('fileName') fileName: string): Promise<string> {
+      try {
+        const url = await this.storageService.generate(fileName);
+        return url;
+      } catch (error) {
+        this.logger.log('Une erreur est survenue lors de la génération de l\'URL0',error);
+      }
+    }
 }

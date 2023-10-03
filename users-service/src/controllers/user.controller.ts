@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { IUserService } from '../interfaces/user.interface';
 import { AddContactParams, SignUpDetails } from '../dtos/types';
-import { User } from '../schema/user.schema';
+import { User } from '../entities/user.entity';
 import { UserService } from 'src/services/user.service';
 
 @Controller('/users')
@@ -22,6 +22,11 @@ export class UsersController {
   constructor(
     @Inject(UserService.name) private readonly userService: IUserService,
   ) {}
+
+  @Get()
+  async hello() {
+    return 'Hello from user controller';
+  }
 
   @Get('search')
   searchUsers(@Query('query') query: string) {

@@ -2,7 +2,7 @@ version: '3'
 services:
   postgres:
     image: postgres:latest
-    container_name: stories-postgres
+    container_name: users-postgres
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USERNAME}
@@ -10,11 +10,11 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - stories-postgres-data:/var/lib/postgresql/data
+      - users-postgres-data:/var/lib/postgresql/data
 
-  stories-service:
-    image: polysnap/stories-service
-    container_name: stories-app
+  users-service:
+    image: polysnap/users-service
+    container_name: users-app
     environment:
       POSTGRESQL_ADDON_HOST: postgres
       POSTGRESQL_ADDON_PORT: 5432
@@ -27,4 +27,4 @@ services:
       - postgres
 
 volumes:
-  stories-postgres-data:
+  users-postgres-data:
