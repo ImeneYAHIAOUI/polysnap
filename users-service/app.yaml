@@ -1,4 +1,4 @@
-service: default
+service: users
 runtime: nodejs18
 includes:
   - credentials.yaml

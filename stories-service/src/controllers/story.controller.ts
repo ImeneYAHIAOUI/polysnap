@@ -11,6 +11,7 @@ import {
 import { StoryService } from '../services/story.service';
 import { CreateStoryDto } from '../dto/create-story.dto';
 import { StoryDto } from '../dto/story.dto';
+import {UploadDto} from "../dto/upload.dto";
 
 @Controller('story')
 export class StoryController {
@@ -33,7 +34,7 @@ export class StoryController {
   }
 
   @Post()
-  async createStory(@Body() createStoryDto: CreateStoryDto): Promise<StoryDto> {
+  async createStory(@Body() createStoryDto: CreateStoryDto): Promise<UploadDto> {
     this.logger.log(`Creating a new story`);
     return this.storyService.createStory(createStoryDto);
   }

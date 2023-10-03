@@ -17,7 +17,8 @@ import { StorageModule } from './storage.module';
       entities: [join(__dirname, '**/**.entity{.ts,.js}')],
       synchronize: true,
     }),
-    StoryModule,StorageModule
+    StoryModule,
+    StorageModule,
   ],
   controllers: [],
   providers: [],
