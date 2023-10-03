@@ -1,21 +1,11 @@
 import { Logger, Module } from '@nestjs/common';
 import { MediaController } from './controllers/media.controller';
-import { PrismaModule, loggingMiddleware } from 'nestjs-prisma';
+import { MediaService } from './services/media.service';
 
 @Module({
-  imports: [
-    PrismaModule.forRoot({
-      isGlobal: true,
-      prismaServiceOptions: {
-        middlewares: [
-          loggingMiddleware({
-            logger: new Logger('PrismaMiddleware'),
-            logLevel: 'log',
-          }),
-        ],
-      },
-    }),
-  ],
+  imports: [],
   controllers: [MediaController],
+  providers: [MediaService, Logger],
+  exports: [MediaService],
 })
 export class MediaModule {}
