@@ -1,4 +1,5 @@
 # Set variables
+<<<<<<< HEAD
 $env:PROJECT_ID = "polysnap-g"
 $env:REGION = "europe-southwest1"
 $env:CONNECTION_NAME = "polysnap-g:us-central1:polysnap"
@@ -37,6 +38,9 @@ $env:POSTGRESQL_ADDON_HOST = "/cloudsql/platinum-factor-367914:us-central1:polys
 $env:POSTGRESQL_ADDON_PASSWORD = "storypassword"
 $env:POSTGRESQL_ADDON_PORT = "5432"
 $env:POSTGRESQL_ADDON_USER = "postgres"
+=======
+. .\credentials.ps1
+>>>>>>> ada7fae5dc6be2167ffb61311a89b26b457ed788
 
 # Build and submit the Docker image
 gcloud builds submit `
