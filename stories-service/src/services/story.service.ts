@@ -14,6 +14,7 @@ export class StoryService {
     private storiesRepository: Repository<Story>,
   ) {}
 
+
   async searchStories(query: string): Promise<StoryDto[] | []> {
     this.logger.log(`Searching for stories with query ${query}`);
     return this.storiesRepository.find({
