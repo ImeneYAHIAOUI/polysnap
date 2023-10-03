@@ -32,7 +32,11 @@ export class StorageController {
       this.logger.log('received url', url);
       return { content, url };
     } catch (error) {
-      this.logger.error('Erreur lors du téléchargement du fichier :', error);
+        if (error instanceof FileNotFoundError) {
+            this.logger.error('Fichier non trouvé :', error);
+        }else{
+           this.logger.error('Erreur lors du téléchargement du fichier :', error);
+        }
     }
   }
 
