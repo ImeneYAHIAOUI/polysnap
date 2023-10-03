@@ -34,10 +34,6 @@ export class StorageService {
       );
       return url;
     } catch (error) {
-      this.logger.error(
-        "Erreur lors de la génération de l'URL signée :",
-        error,
-      );
       throw error;
     }
   }

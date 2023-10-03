@@ -15,21 +15,20 @@ export class StorageController {
   @Get('uploadUrl')
   async getUploadUrl(@Query('fileName') fileName: string): Promise<string> {
     try {
+      this.logger.log(`Attempting to generate upload URL for file: ${fileName}`);
       const url = await this.storageService.generate(fileName);
+      this.logger.log(`Successfully generated upload URL for file: ${fileName}`, url);
       return url;
     } catch (error) {
-      this.logger.log(
-        "Une erreur est survenue lors de la génération de l'URL0",
-        error,
-      );
+      this.logger.error(`Error generating upload URL for file: ${fileName}`, error);
     }
   }
   @Get('download')
   async download(@Query('fileName') fileName: string): Promise<{ content: Buffer, url: string }> {
     try {
+      this.logger.log('Attempting to download file:', fileName);
       const { content, url } = await this.storageService.download(fileName);
-      this.logger.log('Received content', content);
-      this.logger.log('Received URL', url);
+      this.logger.log('File downloaded successfully:', fileName);
       return { content, url };
     } catch (error) {
       if (error instanceof FileNotFoundError) {
@@ -39,6 +38,7 @@ export class StorageController {
       }
     }
   }
+
 
 
 
