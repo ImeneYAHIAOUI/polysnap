@@ -62,6 +62,24 @@ export class UserService implements IUserService {
     }
     return user;
   }
+  async lookUpUserId(userId: number): Promise<User> {
+      const user = await this.usersRepository.findOne({where: { id: userId },});
+      if (!user) {
+        this.logger.error(`User id ${userId} not found`);
+        throw new UserNotFoundException();
+      }
+      return user;
+    }
+ async getContactsOfUser(userId: number): Promise<Contact[]> {
+    const user = this.lookUpUserId(userId);
+    const contacts = await this.contactRepository.find({
+      where: { userId: userId }    });
+    return contacts;
+  }
+    async getUsers(): Promise<User[]> {
+     const users = await this.usersRepository.find();
+     return users;
+   }
 
   async addContact(addContactParams: AddContactParams): Promise<User> {
     this.logger.log(`Adding contact ${JSON.stringify(addContactParams)}`);

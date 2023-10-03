@@ -1,10 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Storage } from '@google-cloud/storage';
 import {FileNotFoundException } from '../exceptions/file-not-found.exception';
+import { UsersProxyService } from './users-service-proxy/user-service-proxy.service';
+import { UnauthorizedException } from '@nestjs/common';
+
 @Injectable()
 export class StorageService {
   private readonly logger = new Logger(StorageService.name);
-
+  private readonly usersProxyService: UsersProxyService;
   private readonly storage;
 
   constructor() {
@@ -37,7 +40,11 @@ export class StorageService {
       throw error;
     }
   }
-  async download(fileName: string): Promise<{ content: Buffer, url: string }> {
+  async download(fileName: string,viewerId: string, publisherId : string): Promise<{ content: Buffer, url: string }> {
+        const contacts = await this.usersProxyService.getContactOfUser(publisherId);
+        if (!contacts.some(contact => contact.userId.toString() === viewerId)) {
+            throw new UnauthorizedException(`The user ${viewerId} is not authorized to access the file ${fileName}.`);
+        }
        const file = this.storage.bucket(process.env.BUCKET_NAME).file(fileName);
         const [exists] = await file.exists();
         if (!exists) {
