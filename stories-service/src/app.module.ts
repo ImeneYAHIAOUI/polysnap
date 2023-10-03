@@ -3,6 +3,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { StoryModule } from './story.module';
+import { StorageModule } from './storage.module';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -15,7 +17,7 @@ import { StoryModule } from './story.module';
       entities: [join(__dirname, '**/**.entity{.ts,.js}')],
       synchronize: true,
     }),
-    StoryModule,
+    StoryModule,StorageModule
   ],
   controllers: [],
   providers: [],

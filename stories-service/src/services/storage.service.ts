@@ -1,12 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { Storage } from '@google-cloud/storage';
+import StorageConfig from "./storage-config";
 
 @Injectable()
 export class StorageService {
   private readonly storage;
 
   constructor() {
-    this.storage = new Storage();
+    this.storage = new Storage({
+                                     projectId: StorageConfig.projectId,
+                                     credentials: {
+                                       client_email: StorageConfig.client_email,
+                                       private_key: StorageConfig.private_key,
+                                     },
+                                   });
   }
   async uploadFile(bucketName: string, originalname: string, buffer: Buffer): Promise<void> {
     const bucket = this.storage.bucket(bucketName);

@@ -3,7 +3,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { StorageService } from '../services/storage.service';
 
-@Controller()
+@Controller('storage')
 export class StorageController {
   constructor(private readonly storageService: StorageService) {}
 
@@ -22,7 +22,7 @@ export class StorageController {
     },
   })
   async uploadMedia(@UploadedFile() file: Express.Multer.File) {
-    const bucketName = 'stories_polysnap_bucket';
+    const bucketName = 'polysnap-bucket';
     await this.storageService.uploadFile(bucketName, file.originalname, file.buffer);
   }
 }
