@@ -24,7 +24,7 @@ export class AppService {
 
     try {
       const messageId = await this.pubsub
-        .topic('projects/poly-chat-400414/topics/messaging_queue_topic')
+        .topic('projects/platinum-factor-367914/topics/message_queue')
         .publishMessage(sent);
 
       console.log(`Message ${messageId} published.`);
