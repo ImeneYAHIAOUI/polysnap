@@ -8,9 +8,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
@@ -19,20 +16,27 @@ let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
     }
-    async createMessage(messageData) {
-        const { topicName, message } = messageData;
-        await this.appService.publishMessage(topicName, message);
+    async createMessage() {
+        await this.appService.publishMessage('projects/platinum-factor-367914/topics/message_queue', 'Hello World!');
         return 'Message published';
+    }
+    async test() {
+        return 'test';
     }
 };
 exports.AppController = AppController;
 __decorate([
     (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "createMessage", null);
+__decorate([
+    (0, common_1.Get)('test'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "test", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)('messages'),
     __metadata("design:paramtypes", [app_service_1.AppService])

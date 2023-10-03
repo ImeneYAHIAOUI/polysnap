@@ -1,7 +1,7 @@
-// your.service.ts
-
 import { Injectable } from '@nestjs/common';
 import { PubSub } from '@google-cloud/pubsub';
+import { KafkaService } from 'nestjs-kafka'; // Update the import
+import * as avsc from 'avsc'; // Import avsc library
 
 @Injectable()
 export class AppService {
@@ -14,24 +14,31 @@ export class AppService {
     });
   }
 
-  async publishMessage(topicName: string, message: string): Promise<void> {
-    message = 'Hello World!';
-    const dataBuffer = Buffer.from(message);
-
-    const sent = {
-      data: dataBuffer,
-    };
-
+  async publishMessage(topicName: string, content: string): Promise<void> {
     try {
+      // Create a message object with the specified Avro schema
+      const messageData = {
+        chatId: '123',
+        sender: 'user1',
+        content: content, // Specify content directly
+        attachment: {
+          type: 'image',
+          name: 'example.jpg',
+          link: 'https://example.com/example.jpg',
+        },
+        expiring: false,
+      };
+
+      // Publish the message
       const messageId = await this.pubsub
-        .topic('projects/platinum-factor-367914/topics/message_queue')
-        .publishMessage(sent);
+        .topic(topicName)
+        .publishJSON(messageData);
 
       console.log(`Message ${messageId} published.`);
-
       console.log('Message published successfully.');
     } catch (error) {
       console.error('Error publishing message:', error);
     }
   }
 }
+

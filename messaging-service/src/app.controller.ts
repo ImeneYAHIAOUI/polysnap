@@ -9,7 +9,7 @@ export class AppController {
   @Post()
   async createMessage() {
     await this.appService.publishMessage(
-      'projects/poly-chat-400414/topics/messaging_queue_topic',
+      'projects/platinum-factor-367914/topics/message_queue',
       'Hello World!');
     
       return 'Message published';

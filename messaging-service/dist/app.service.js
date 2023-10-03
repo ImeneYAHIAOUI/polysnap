@@ -14,20 +14,24 @@ const common_1 = require("@nestjs/common");
 const pubsub_1 = require("@google-cloud/pubsub");
 let AppService = class AppService {
     constructor() {
-        this.pubsub = new pubsub_1.PubSub({
-            projectId: 'poly-chat-400414',
-            keyFilename: './poly-chat-400414-0e1e2e3f4f5a.json',
-        });
+        this.pubsub = new pubsub_1.PubSub({});
     }
-    async publishMessage(topicName, message) {
-        const dataBuffer = Buffer.from(message);
-        const sent = {
-            data: dataBuffer,
-        };
+    async publishMessage(topicName, content) {
         try {
+            const messageData = {
+                chatId: '123',
+                sender: 'user1',
+                content: content,
+                attachment: {
+                    type: 'image',
+                    name: 'example.jpg',
+                    link: 'https://example.com/example.jpg',
+                },
+                expiring: false,
+            };
             const messageId = await this.pubsub
-                .topic('projects/poly-chat-400414/topics/messaging_queue_topic')
-                .publishMessage(sent);
+                .topic(topicName)
+                .publishJSON(messageData);
             console.log(`Message ${messageId} published.`);
             console.log('Message published successfully.');
         }

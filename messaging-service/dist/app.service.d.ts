@@ -1,5 +1,5 @@
 export declare class AppService {
     private pubsub;
     constructor();
-    publishMessage(topicName: string, message: string): Promise<void>;
+    publishMessage(topicName: string, content: string): Promise<void>;
 }
