@@ -16,6 +16,17 @@ export class MediaMetaDataDto {
   extension: ImageExtension | VideoExtension | AudioExtension;
 }
 
+export class MediaMetaDataExistsDto {
+  @IsNotEmpty()
+  filename: string;
+
+  @IsNotEmpty()
+  filetype: FileType;
+
+  @IsNotEmpty()
+  extension: ImageExtension | VideoExtension | AudioExtension;
+}
+
 export enum FileType {
   IMAGE = 'image',
   VIDEO = 'video',
