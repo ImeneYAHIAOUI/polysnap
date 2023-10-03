@@ -9,12 +9,13 @@ export class AppService {
 
   constructor() {
     this.pubsub = new PubSub({
-      projectId: 'poly-chat-400414',
-      keyFilename: './poly-chat-400414-0e1e2e3f4f5a.json',
+      //projectId: 'poly-chat-400414',
+      //keyFilename: 'poly-chat-400414-0e1e2e3f4f5a.json',
     });
   }
 
   async publishMessage(topicName: string, message: string): Promise<void> {
+    message = 'Hello World!';
     const dataBuffer = Buffer.from(message);
 
     const sent = {
@@ -23,7 +24,7 @@ export class AppService {
 
     try {
       const messageId = await this.pubsub
-        .topic('./poly-chat-400414/topics/messaging_queue_topic')
+        .topic('projects/poly-chat-400414/topics/messaging_queue_topic')
         .publishMessage(sent);
 
       console.log(`Message ${messageId} published.`);
