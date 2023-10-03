@@ -28,16 +28,18 @@ export class StorageController {
   async download(@Query('fileName') fileName: string): Promise<{ content: Buffer, url: string }> {
     try {
       const { content, url } = await this.storageService.download(fileName);
-      this.logger.log('received content', content);
-      this.logger.log('received url', url);
+      this.logger.log('Received content', content);
+      this.logger.log('Received URL', url);
       return { content, url };
     } catch (error) {
-        if (error instanceof FileNotFoundError) {
-            this.logger.error('Fichier non trouvé :', error);
-        }else{
-           this.logger.error('Erreur lors du téléchargement du fichier :', error);
-        }
+      if (error instanceof FileNotFoundError) {
+        this.logger.error('File not found:', error);
+      } else {
+        this.logger.error('Error during file download:', error);
+      }
     }
   }
+
+
 
 }

@@ -48,9 +48,7 @@ export class StorageService {
             throw new FileNotFoundException(`Le fichier ${fileName} n'existe pas.`);
         }
        const [fileContent] = await file.download();
-       this.logger.log(`fule content ${fileContent}`);
        const url = `https://storage.google.com/${process.env.BUCKET_NAME}/${fileName}`;
-       this.logger.log(`response url ${url}`);
        return { content: fileContent, url: url };
   }
   async uploadFile(
