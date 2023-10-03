@@ -1,0 +1,55 @@
+# openapi2-appengine.yaml
+swagger: '2.0'
+info:
+  title: Polysnap API
+  description: Sample API on API Gateway with an App Engine backend
+  version: 1.0.0
+schemes:
+  - https
+produces:
+  - application/json
+paths:
+  /stories:
+    get:
+      summary: manage stories
+      operationId: stories
+      x-google-backend:
+        address: https://stories-dot-platinum-factor-367914.oa.r.appspot.com/story
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string
+  /users:
+    get:
+      summary: manage users
+      operationId: users
+      x-google-backend:
+        address: https://users-dot-platinum-factor-367914.oa.r.appspot.com/users
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string
+  /messagereader:
+    get:
+      summary: manage reading messages
+      operationId: messagereader
+      x-google-backend:
+        address: https://messagereader-dot-platinum-factor-367914.oa.r.appspot.com/
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string
+  /messagewriter:
+    get:
+      summary: manage writing messages
+      operationId: messagewriter
+      x-google-backend:
+        address: https://messagewriter-dot-platinum-factor-367914.oa.r.appspot.com/messages
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string

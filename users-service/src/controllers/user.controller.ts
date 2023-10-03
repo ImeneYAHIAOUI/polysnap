@@ -13,8 +13,10 @@ import {
 import { IUserService } from '../interfaces/user.interface';
 import { AddContactParams, SignUpDetails } from '../dtos/types';
 import { User } from '../entities/user.entity';
+import { UnauthorizedException } from '@nestjs/common';
+import { Contact } from '../entities/contact.entity';
 import { UserService } from 'src/services/user.service';
-
+import {UserNotFoundException } from '../exceptions/UserNotFound';
 @Controller('/users')
 export class UsersController {
   private readonly logger = new Logger(UsersController.name);
@@ -35,6 +37,40 @@ export class UsersController {
       throw new HttpException('Provide a valid query', HttpStatus.BAD_REQUEST);
     return this.userService.findUsers(query);
   }
+  @Get('contacts')
+  async getContactsOfUser(@Query('UserId') userId: number): Promise<Contact[]> {
+    try {
+      this.logger.log(`Getting contacts of user ${userId}`);
+      return this.userService.getContactsOfUser(userId);
+    } catch (error) {
+        if(error instanceof UserNotFoundException) {
+           this.logger.log(`User with ID ${userId} not found.`);
+        }else{
+            this.logger.error(`Error fetching contacts for user with ID ${userId}:`, error);
+        }
+    }
+  }
+   @Get('users/all')
+    async getUsers(): Promise<User[]> {
+      try {
+        this.logger.log(`Getting contacts`);
+        return this.userService.getUsers();
+      } catch (error) {
+            this.logger.error(`Error getting users:`, error);
+      }
+    }
+    @Patch('contacts')
+    addContact(@Body() addContactParams: AddContactParams): Promise<User> {
+      this.logger.log(
+        `Received add contact request for ${JSON.stringify(addContactParams)}`,
+      );
+      if (!addContactParams)
+        throw new HttpException(
+          'Provide a valid contact to add',
+          HttpStatus.BAD_REQUEST,
+        );
+      return this.userService.addContact(addContactParams);
+    }
 
   @Get('lookup')
   lookUpUser(@Query() findUserParams: Partial<User>): Promise<User> {
@@ -49,18 +85,7 @@ export class UsersController {
     return this.userService.lookUpUser(findUserParams);
   }
 
-  @Patch('contacts')
-  addContact(@Body() addContactParams: AddContactParams): Promise<User> {
-    this.logger.log(
-      `Received add contact request for ${JSON.stringify(addContactParams)}`,
-    );
-    if (!addContactParams)
-      throw new HttpException(
-        'Provide a valid contact to add',
-        HttpStatus.BAD_REQUEST,
-      );
-    return this.userService.addContact(addContactParams);
-  }
+
 
   @Post('signup')
   signUp(@Body() userDetails: SignUpDetails): Promise<User> {
