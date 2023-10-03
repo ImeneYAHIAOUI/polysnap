@@ -1,6 +1,5 @@
-import { Injectable,Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Storage } from '@google-cloud/storage';
-import StorageConfig from "./storage-config";
 
 @Injectable()
 export class StorageService {
@@ -20,25 +19,34 @@ export class StorageService {
         contentType: 'application/octet-stream',
       };
       const [url] = await this.storage
-        .bucket('https://storage.cloud.google.com/polysnap-stories/360_F_143238306_lh0ap42wgot36y44WybfQpvsJB5A1CHc.jpg')
+        .bucket('story-bucket')
         .file(fileName)
         .getSignedUrl(options);
 
       this.logger.log('URL de téléversement signée PUT générée :');
       this.logger.log(url);
-      this.logger.log('Vous pouvez utiliser cette URL avec n\'importe quel agent utilisateur, par exemple :');
+      this.logger.log(
+        "Vous pouvez utiliser cette URL avec n'importe quel agent utilisateur, par exemple :",
+      );
       this.logger.log(
         "curl -X PUT -H 'Content-Type: application/octet-stream' " +
           `--upload-file mon-fichier '${url}'`,
       );
       return url;
     } catch (error) {
-      this.logger.error('Erreur lors de la génération de l\'URL signée :', error);
+      this.logger.error(
+        "Erreur lors de la génération de l'URL signée :",
+        error,
+      );
       throw error;
     }
   }
 
-  async uploadFile(bucketName: string, originalname: string, buffer: Buffer): Promise<void> {
+  async uploadFile(
+    bucketName: string,
+    originalname: string,
+    buffer: Buffer,
+  ): Promise<void> {
     const bucket = this.storage.bucket(bucketName);
 
     const blob = bucket.file(originalname);

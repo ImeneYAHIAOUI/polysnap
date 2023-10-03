@@ -8,11 +8,12 @@ export class Story {
   @Column()
   user: string;
   @Column()
+  filename: string;
+  @Column()
   views: number;
   @Column()
   format: string;
   @Column()
   size: string;
-  @Column()
-  videoUrl: string;
+
 }
