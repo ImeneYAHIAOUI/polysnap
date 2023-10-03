@@ -20,13 +20,24 @@ export class AppService {
   }
 
   async subscribeToTopic() {
-    const [subscription] = await this.pubsub
-      .topic('projects/poly-chat-400414/topics/messaging_queue_topic')
-      .createSubscription("receiver");
 
-    subscription.on('message', (message) => {
-      console.log("receive message "+ message);
+    const subscription = this.pubsub.subscription("receiver");
+
+    let messageCount = 0;
+    const messageHandler = (message) => {
+      console.log(`Received message ${message}:`);
+      messageCount += 1;
+
+      // "Ack" (acknowledge receipt of) the message
       message.ack();
-    });
+    };
+
+    subscription.on('message', messageHandler);
+
+    setTimeout(() => {
+      subscription.removeListener('message', messageHandler);
+      console.log(`${messageCount} message(s) received.`);
+    }, 5 * 1000);
   }
+  
 }
