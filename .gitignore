@@ -2,7 +2,7 @@
 /dist
 /node_modules
 # credentials
-**/credentials.*
+stories-service/credentials.yaml
 
 # Logs
 logs

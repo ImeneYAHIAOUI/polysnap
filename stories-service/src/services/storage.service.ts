@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Storage } from '@google-cloud/storage';
-
+import {FileNotFoundException } from '../exceptions/file-not-found.exception';
 @Injectable()
 export class StorageService {
   private readonly logger = new Logger(StorageService.name);
@@ -41,29 +41,30 @@ export class StorageService {
       throw error;
     }
   }
-
+  async download(fileName: string): Promise<{ content: Buffer, url: string }> {
+       const file = this.storage.bucket(process.env.BUCKET_NAME).file(fileName);
+        const [exists] = await file.exists();
+        if (!exists) {
+            throw new FileNotFoundException(`Le fichier ${fileName} n'existe pas.`);
+        }
+       const [fileContent] = await file.download();
+       this.logger.log(`fule content ${fileContent}`);
+       const url = `https://storage.google.com/${process.env.BUCKET_NAME}/${fileName}`;
+       this.logger.log(`response url ${url}`);
+       return { content: fileContent, url: url };
+  }
   async uploadFile(
     bucketName: string,
     originalname: string,
     buffer: Buffer,
   ): Promise<void> {
     const bucket = this.storage.bucket(bucketName);
+   }
 
-    const blob = bucket.file(originalname);
-    const blobStream = blob.createWriteStream();
 
-    return new Promise((resolve, reject) => {
-      blobStream.on('error', (err) => {
-        console.error(err);
-        reject(err);
-      });
 
-      blobStream.on('finish', () => {
-        console.log(`Fichier ${originalname} uploadé avec succès.`);
-        resolve();
-      });
 
-      blobStream.end(buffer);
-    });
-  }
+
+
+
 }
