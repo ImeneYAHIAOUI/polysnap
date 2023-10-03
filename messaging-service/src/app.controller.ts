@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
 
@@ -7,11 +7,16 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Post()
-  async createMessage(
-    @Body() messageData: { topicName: string; message: string },
-  ) {
-    const { topicName, message } = messageData;
-    await this.appService.publishMessage(topicName, message);
-    return 'Message published';
+  async createMessage() {
+    await this.appService.publishMessage(
+      'projects/poly-chat-400414/topics/messaging_queue_topic',
+      'Hello World!');
+    
+      return 'Message published';
+  }
+
+  @Get('test')
+  async test() {
+      return 'test';
   }
 }
