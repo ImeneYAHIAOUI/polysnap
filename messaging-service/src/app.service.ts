@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PubSub } from '@google-cloud/pubsub';
-import { KafkaService } from 'nestjs-kafka'; // Update the import
+
 import * as avsc from 'avsc'; // Import avsc library
 
 @Injectable()
 export class AppService {
   private pubsub: PubSub;
+  
 
   constructor() {
     this.pubsub = new PubSub({
-      //projectId: 'poly-chat-400414',
-      //keyFilename: 'poly-chat-400414-0e1e2e3f4f5a.json',
     });
   }
 
@@ -40,5 +39,6 @@ export class AppService {
       console.error('Error publishing message:', error);
     }
   }
+
 }
 
