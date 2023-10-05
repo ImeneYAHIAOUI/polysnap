@@ -9,27 +9,31 @@ const logger = new Logger('UsersProxyService');
 
 @Injectable()
 export class UsersProxyService {
-    private _baseUrl: string;
-    private _usersServicePath='/users';
-    constructor(private configService: ConfigService, private readonly httpService: HttpService) {
-        const dependenciesConfig = this.configService.get<DependenciesConfig>('dependencies');
-        this._baseUrl = `http://${dependenciesConfig.user_service_url}`;
+  private _baseUrl: string;
+  private _usersServicePath = 'users';
+  constructor(
+    private configService: ConfigService,
+    private readonly httpService: HttpService,
+  ) {
+    const dependenciesConfig =
+      this.configService.get<DependenciesConfig>('dependencies');
+    this._baseUrl = `${dependenciesConfig.user_service_url}`;
+  }
+  async getContactOfUser(userId: string): Promise<ContactDto[]> {
+    try {
+    logger.log('${this._baseUrl}${this._usersServicePath}/contacts?UserId=${userId}');
+      const response: AxiosResponse<ContactDto[]> = await firstValueFrom(
+
+        this.httpService.get<ContactDto[]>(
+          `${this._baseUrl}${this._usersServicePath}/contacts?UserId=${userId}`,
+        ),
+      );
+      logger.log(`retrieving user contacts  successfully`);
+
+      return response.data;
+    } catch (error) {
+      logger.log('Error while fetching users:', error);
+      throw error;
     }
-        async getContactOfUser(userId: string): Promise<ContactDto[]> {
-          try {
-            const response: AxiosResponse<ContactDto[]> = await firstValueFrom(
-              this.httpService.get<ContactDto[]>(
-                `${this._baseUrl}${this._usersServicePath}/contacts?UserId=${userId}`
-              ));
-              logger.log(`retrieving user contacts  successfully`)
-
-              return response.data;
-
-          } catch (error) {
-            console.error('Error while fetching users:', error);
-            throw error;
-          }
-        }
-
-
+  }
 }

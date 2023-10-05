@@ -7,12 +7,11 @@ import { UnauthorizedException } from '@nestjs/common';
 @Injectable()
 export class StorageService {
   private readonly logger = new Logger(StorageService.name);
-  private readonly usersProxyService: UsersProxyService;
   private readonly storage;
 
-  constructor() {
-    this.storage = new Storage();
-  }
+    constructor(private readonly usersProxyService: UsersProxyService) {
+      this.storage = new Storage();
+    }
   async generate(fileName: string): Promise<string> {
     try {
       const options = {

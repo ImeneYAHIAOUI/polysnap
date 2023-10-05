@@ -1,20 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 import { IMediaService } from 'src/interfaces/media.interface';
-import { MediaMetaData } from 'src/schema/media.schema';
-import { MediaNotFoundException } from 'src/exceptions/MediaNotFound';
+import { MediaMetaDataExistsDto } from 'src/dtos/types';
 
 @Injectable()
 export class MediaService implements IMediaService {
   private readonly logger = new Logger(MediaService.name);
 
-  constructor(
-    @InjectRepository(MediaMetaData)
-    private mediaMetaDataRepository: Repository<MediaMetaData>,
-  ) {}
+  constructor() {}
 
-  async getSignedUrlResponse(mediaMetaData: MediaMetaData): Promise<string> {
+  async getSignedUrlResponse(
+    mediaMetaData: MediaMetaDataExistsDto,
+  ): Promise<string> {
     this.logger.log(
       `Getting signed URL to upload ${JSON.stringify(mediaMetaData)}`,
     );
@@ -27,8 +23,7 @@ export class MediaService implements IMediaService {
       contentType: 'application/octet-stream',
     };
 
-    const { filename, filetype, uploaderId, extension, expirationdate } =
-      mediaMetaData;
+    const { filename, filetype, extension } = mediaMetaData;
 
     const path = `/media/${filetype}/${filename}.${extension}`;
 
@@ -38,33 +33,23 @@ export class MediaService implements IMediaService {
       .file(path)
       .getSignedUrl(options);
 
-    url &&
-      (await this.mediaMetaDataRepository.create({
-        filename,
-        filetype,
-        uploaderId,
-        extension,
-        expirationdate,
-      }));
-
     return url;
   }
 
-  async verifyMediaExists(mediaMetaData: MediaMetaData): Promise<boolean> {
+  async verifyMediaExists(
+    mediaMetaData: MediaMetaDataExistsDto,
+  ): Promise<boolean> {
     this.logger.log(`Verifying media ${JSON.stringify(mediaMetaData)} exists`);
-    const { filename, filetype, uploaderId, extension, expirationdate } =
-      mediaMetaData;
-    const res = await this.mediaMetaDataRepository.findOne({
-      filename,
-      filetype,
-      uploaderId,
-      extension,
-      expirationdate,
-    });
-    if (!res) {
-      this.logger.error(`Media ${JSON.stringify(mediaMetaData)} not found`);
-      throw new MediaNotFoundException();
-    }
-    return true;
+    const { filename, filetype, extension } = mediaMetaData;
+    const storage = new Storage();
+    const path = `/media/${filetype}/${filename}.${extension}`;
+
+    // Get a v4 signed URL for uploading file
+    const res = await storage
+      .bucket(process.env.GCLOUD_STORAGE_MEDIA_BUCKET)
+      .file(path)
+      .exists();
+
+    return res;
   }
 }

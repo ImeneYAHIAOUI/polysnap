@@ -1,7 +1,7 @@
-import { MediaMetaData } from 'src/schema/media.schema';
+import { MediaMetaDataExistsDto } from 'src/dtos/types';
 
 export interface IMediaService {
-  getSignedUrlResponse(mediaMetaData: MediaMetaData): Promise<string>;
+  getSignedUrlResponse(mediaMetaData: MediaMetaDataExistsDto): Promise<string>;
 
-  verifyMediaExists(mediaMetaData: MediaMetaData): Promise<boolean>;
+  verifyMediaExists(mediaMetaData: MediaMetaDataExistsDto): Promise<boolean>;
 }

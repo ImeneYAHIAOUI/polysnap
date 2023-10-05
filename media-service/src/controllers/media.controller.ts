@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Inject, Logger, Post } from '@nestjs/common';
+import { MediaMetaDataExistsDto } from 'src/dtos/types';
 import { IMediaService } from 'src/interfaces/media.interface';
-import { MediaMetaData } from 'src/schema/media.schema';
 
 @Controller('/media')
 export class MediaController {
@@ -14,12 +14,16 @@ export class MediaController {
   }
 
   @Post('generate-upload-url')
-  async getUploadUrl(@Body() mediaMetaData: MediaMetaData): Promise<string> {
+  async getUploadUrl(
+    @Body() mediaMetaData: MediaMetaDataExistsDto,
+  ): Promise<string> {
     return this.mediaMetaDataService.getSignedUrlResponse(mediaMetaData);
   }
 
   @Post('check-existence')
-  async checkExistence(@Body() mediaMetaData: MediaMetaData): Promise<boolean> {
+  async checkExistence(
+    @Body() mediaMetaData: MediaMetaDataExistsDto,
+  ): Promise<boolean> {
     return this.mediaMetaDataService.verifyMediaExists(mediaMetaData);
   }
 }

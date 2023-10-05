@@ -5,8 +5,16 @@ import { join } from 'path';
 import { StoryModule } from './story.module';
 import { StorageModule } from './storage.module';
 import { UsersProxyService } from './services/users-service-proxy/user-service-proxy.service';
+import dependenciesConfig from './shared/config/dependencies.config';
+import { ConfigModule } from '@nestjs/config';
+import {HttpModule} from "@nestjs/axios";
 @Module({
   imports: [
+  HttpModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [dependenciesConfig],
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.POSTGRESQL_ADDON_HOST,
