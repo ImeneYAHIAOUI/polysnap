@@ -40,7 +40,7 @@ export class StorageController {
         viewerId,
         publisher,
       );
-      this.logger.log('File downloaded successfully:', fileName);
+      this.logger.log('File downloaded successfully: ${fileName}');
       return { content, url };
     } catch (error) {
       if (error instanceof FileNotFoundException) {

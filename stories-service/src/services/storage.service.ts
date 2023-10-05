@@ -40,8 +40,10 @@ export class StorageService {
     }
   }
   async download(fileName: string,viewerId: string, publisherId : string): Promise<{ content: Buffer, url: string }> {
+        this.logger.log(`Downloading story for user ${viewerId} from user ${publisherId}`);
         const contacts = await this.usersProxyService.getContactOfUser(publisherId);
-        if (!contacts.some(contact => contact.userId.toString() === viewerId)) {
+        this.logger.log(`Retrieved contacts for user ${publisherId}:`, contacts);
+        if (!contacts.some(contact => contact.contactId.toString() === viewerId)) {
             throw new UnauthorizedException(`The user ${viewerId} is not authorized to access the file ${fileName}.`);
         }
        const file = this.storage.bucket(process.env.BUCKET_NAME).file(fileName);
