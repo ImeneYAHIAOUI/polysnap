@@ -21,10 +21,7 @@ export class StorageController {
       );
       return url;
     } catch (error) {
-      this.logger.error(
-        `Error generating upload URL for file: ${fileName}`,
-        error,
-      );
+      this.logger.error(`Error generating upload URL for file: ${fileName}`,error, );
     }
   }
   @Get('download')

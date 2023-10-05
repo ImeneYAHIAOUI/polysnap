@@ -38,4 +38,9 @@ export class StoryController {
     this.logger.log(`Creating a new story`);
     return this.storyService.createStory(createStoryDto);
   }
+  @Get('all')
+  async getAllStories(@Query('userId')userId : string): Promise<StoryDto[]> {
+    this.logger.log(`Getting all stories`);
+    return this.storyService.getAllStories(userId);
+  }
 }
