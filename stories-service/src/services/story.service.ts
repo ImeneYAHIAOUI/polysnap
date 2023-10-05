@@ -40,7 +40,9 @@ export class StoryService {
       size: createStoryDto.size,
       views: 0, // Assuming you initialize views to 0
     });
-
+     const expirationDate = new Date();
+      expirationDate.setHours(expirationDate.getHours() + 24);
+      newStory.expirationTime = expirationDate;
     const createdStory = await this.storiesRepository.save(newStory);
     const upload: UploadDto = {
       uploadUrl: url,
@@ -48,4 +50,14 @@ export class StoryService {
     };
     return upload;
   }
+  async getAllStories(userId: string): Promise<StoryDto[] | []> {
+  return this.storiesRepository.find({
+    where: { user: userId },
+    select: ['id', 'title', 'user', 'filename', 'format', 'size', 'views', 'creationTime', 'expirationTime'],
+    order: {
+      creationTime: 'ASC',
+    },
+  });
+}
+
 }

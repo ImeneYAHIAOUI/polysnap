@@ -7,12 +7,11 @@ import { UnauthorizedException } from '@nestjs/common';
 @Injectable()
 export class StorageService {
   private readonly logger = new Logger(StorageService.name);
-  private readonly usersProxyService: UsersProxyService;
   private readonly storage;
 
-  constructor() {
-    this.storage = new Storage();
-  }
+    constructor(private readonly usersProxyService: UsersProxyService) {
+      this.storage = new Storage();
+    }
   async generate(fileName: string): Promise<string> {
     try {
       const options = {
@@ -41,8 +40,10 @@ export class StorageService {
     }
   }
   async download(fileName: string,viewerId: string, publisherId : string): Promise<{ content: Buffer, url: string }> {
+        this.logger.log(`Downloading story for user ${viewerId} from user ${publisherId}`);
         const contacts = await this.usersProxyService.getContactOfUser(publisherId);
-        if (!contacts.some(contact => contact.userId.toString() === viewerId)) {
+        this.logger.log(`Retrieved contacts for user ${publisherId}:`, contacts);
+        if (!contacts.some(contact => contact.contactId.toString() === viewerId)) {
             throw new UnauthorizedException(`The user ${viewerId} is not authorized to access the file ${fileName}.`);
         }
        const file = this.storage.bucket(process.env.BUCKET_NAME).file(fileName);
