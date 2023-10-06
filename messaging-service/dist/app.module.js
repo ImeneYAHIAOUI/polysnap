@@ -8,16 +8,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
-const app_service_1 = require("./app.service");
-const app_controller_1 = require("./app.controller");
+const messages_controller_1 = require("./controllers/messages.controller");
+const chats_controller_1 = require("./controllers/chats.controller");
+const messages_service_1 = require("./services/messages.service");
+const chat_service_1 = require("./services/chat.service");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [],
-        providers: [app_service_1.AppService],
-        controllers: [app_controller_1.AppController],
+        providers: [messages_service_1.MessageService, chat_service_1.ChatService],
+        controllers: [messages_controller_1.MessageController, chats_controller_1.ChatController],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

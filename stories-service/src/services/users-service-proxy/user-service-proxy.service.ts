@@ -5,6 +5,7 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { ContactDto } from '../../dto/contact.dto';
 import { DependenciesConfig } from '../../shared/config/interfaces/dependencies-config.interface';
+
 const logger = new Logger('UsersProxyService');
 
 @Injectable()

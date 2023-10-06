@@ -5,10 +5,10 @@ import { MessageService } from 'src/services/messages.service';
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
-  @Get()
-  async subscribeToTopic() {
-    console.log("testing subscription");
-    this.messageService.subscribeToTopic();
+  @Post()
+  async subscribeToTopic(@Body() requestBody: any) {
+    console.log('Received request body:', requestBody);
+    this.messageService.subscribeToTopic(requestBody);
     return 'Subscribed to topic';
   }
 

@@ -1,6 +1,7 @@
 import { PubSub } from '@google-cloud/pubsub';
 import { Injectable } from '@nestjs/common';
 import { Datastore } from '@google-cloud/datastore';
+import { Chat } from 'src/entities/chat.entity';
 
 
 @Injectable()
@@ -15,6 +16,7 @@ export class ChatService {
   }
 
   async createChat(name: string, participants: string[]): Promise<void> {
+   // check if particiapnts are in db
     const chatEntity = {
       key: this.datastore.key('chat'), 
       data: {
@@ -25,10 +27,5 @@ export class ChatService {
     await this.datastore.save(chatEntity);
   }
 
-  async getChatById(id: string): Promise<any | undefined> {
-    const key = this.datastore.key(['chat', parseInt(id, 10)]);
-    const [entity] = await this.datastore.get(key);
-    return entity;
-  }
 
 }

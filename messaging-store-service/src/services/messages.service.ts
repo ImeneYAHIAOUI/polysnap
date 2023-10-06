@@ -14,30 +14,15 @@ export class MessageService {
     this.datastore = new Datastore();
   }
 
-  async subscribeToTopic() {
-    const subscriptionName = 'receiver';
-    const subscription = this.pubsub.subscription(subscriptionName);
+  async subscribeToTopic(requestBody : any) {
+ 
+    console.log('Message Content:', requestBody);
 
-    let messageCount = 0;
-    const messageHandler = async (message) => {
-      console.log(`Received message ${message.id}:`);
-      messageCount += 1;
-
-      console.log('Message Content:', message.data.toString());
-      const messageData = JSON.parse(message.data.toString());
-      await this.sendMessage(messageData);
-      // "Ack" (acknowledge receipt of) the message
-      message.ack();
-    };
-
-    subscription.on('message', messageHandler);
-
-    setTimeout(() => {
-      subscription.removeListener('message', messageHandler);
-      console.log(`${messageCount} message(s) received.`);
-    }, 5 * 1000);
-
-  }
+    const data = requestBody.message.data;
+    const decodedData = Buffer.from(data, 'base64').toString('utf-8');
+    const messageData = JSON.parse(decodedData.toString());
+    await this.sendMessage(messageData);
+}
 
   async sendMessage(message) {
     const chatEntity = {
@@ -49,6 +34,7 @@ export class MessageService {
         attachment: message.attachment,
         expiring: message.expiring,
         seenBy : [],
+        date : Date.now()
       },
     };
     console.log("Sending message to the database");
@@ -66,15 +52,33 @@ export class MessageService {
   
     console.log("getting unread message end filtering")
 
-    // Update all the unread messages to mark them as seen by the user
     for (const message of unreadMessages) {
         console.log("messages "+ message.toString())
       await this.updateMessage(message, userId);
     }
-
-  
     return unreadMessages;
   }
+
+  async getAllMessagesFromDate(chatId: string, userId: string, specificDate : Date): Promise<any[]> {
+
+    console.log("getting all messages begin from date "+ specificDate)
+    const query = this.datastore
+      .createQuery('messages');
+  
+    const [entities] = await this.datastore.runQuery(query);
+    const filteredMessages = entities.filter(entity => new Date(entity.date) >= specificDate && 
+    (!entity.expiring || !entity.seenBy.includes(userId)));
+
+  
+    console.log("getting unread message end filtering")
+
+    for (const message of filteredMessages) {
+        console.log("messages "+ message.toString())
+      await this.updateMessage(message, userId);
+    }
+    return filteredMessages;
+  }
+
   
   async updateMessage(message: any, userId: string): Promise<void> {
     console.log("getting unread message begin updating")
@@ -82,7 +86,9 @@ export class MessageService {
     if (!message.seenBy) {
       message.seenBy = [];
     }
-    message.seenBy.push(userId);
+    if(!message.seenBy.includes(userId)) {
+        message.seenBy.push(userId);
+    }
   
     // Save the updated entity back to the datastore
     await this.datastore.save({

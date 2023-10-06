@@ -1,4 +1,4 @@
 runtime: nodejs18
-service: messagewriter
+service: messagesender
 env_variables:
   NODE_ENV: production
