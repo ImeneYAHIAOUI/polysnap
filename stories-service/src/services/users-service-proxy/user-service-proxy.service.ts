@@ -21,12 +21,11 @@ export class UsersProxyService {
   }
   async getContactOfUser(userId: string): Promise<ContactDto[]> {
     try {
-    logger.log('${this._baseUrl}${this._usersServicePath}/contacts?UserId=${userId}');
+    logger.log(`${this._baseUrl}${this._usersServicePath}/contacts?UserId=${userId}`);
       const response: AxiosResponse<ContactDto[]> = await firstValueFrom(
 
         this.httpService.get<ContactDto[]>(
-          `${this._baseUrl}${this._usersServicePath}/contacts?UserId=${userId}`,
-        ),
+          `${this._baseUrl}${this._usersServicePath}/contacts?UserId=${userId}`,),
       );
       logger.log(`retrieving user contacts  successfully`);
 

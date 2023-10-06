@@ -21,10 +21,7 @@ export class StorageController {
       );
       return url;
     } catch (error) {
-      this.logger.error(
-        `Error generating upload URL for file: ${fileName}`,
-        error,
-      );
+      this.logger.error(`Error generating upload URL for file: ${fileName}`,error, );
     }
   }
   @Get('download')
@@ -40,7 +37,7 @@ export class StorageController {
         viewerId,
         publisher,
       );
-      this.logger.log('File downloaded successfully:', fileName);
+      this.logger.log('File downloaded successfully: ${fileName}');
       return { content, url };
     } catch (error) {
       if (error instanceof FileNotFoundException) {
