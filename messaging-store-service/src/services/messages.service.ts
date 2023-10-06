@@ -41,7 +41,25 @@ export class MessageService {
     await this.datastore.save(chatEntity);
   }
 
+
+  async checkIfChatExists(chatId: string): Promise<boolean> {
+    const chats = this.datastore.createQuery('chat')
+    const [chatEntities] = await this.datastore.runQuery(chats);
+    const chat = chatEntities.find((entity) => entity.name === chatId);
+    if (!chat) {
+      throw new NotFoundException(`Chat ${chatId} not found`);
+    }
+    return true;
+  }
+
+
   async getUnreadMessages(chatId: string, userId: string): Promise<any[]> {
+
+    const chat = this.checkIfChatExists(chatId);
+
+    if (!chat) {
+        throw new NotFoundException(`Chat ${chatId} not found`);
+    }
 
     console.log("getting unread message begin")
     const query = this.datastore
@@ -60,6 +78,12 @@ export class MessageService {
   }
 
   async getAllMessagesFromDate(chatId: string, userId: string, specificDate : Date): Promise<any[]> {
+
+    const chat = this.checkIfChatExists(chatId);
+
+    if (!chat) {
+      throw new NotFoundException(`Chat ${chatId} not found`);
+    }
 
     console.log("getting all messages begin from date "+ specificDate)
     const query = this.datastore
