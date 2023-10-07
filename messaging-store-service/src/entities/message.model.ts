@@ -10,7 +10,7 @@ export class MessageDTO {
       link: string,
     };
     expiring: boolean;
-    expirationDate: Date;
+    expirationTime : number;
 }
 
 

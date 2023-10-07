@@ -1,5 +1,4 @@
 export class MessageDTO {
-    id : string;
     chatId: string;
     sender: string;
     content: string; 
@@ -9,7 +8,7 @@ export class MessageDTO {
       link: string,
     };
     expiring: boolean;
-    expirationDate: Date;
+    expirationTime: number;
 }
 
 
