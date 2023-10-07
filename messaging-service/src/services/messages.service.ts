@@ -16,6 +16,9 @@ export class MessageService {
   async publishMessage(message: MessageDTO): Promise<void> {
     try {
       const topicName = 'projects/cloud-398911/topics/message_queue';
+
+  
+
       // Publish the message
       const messageId = await this.pubsub
         .topic(topicName)

@@ -1,6 +1,8 @@
+/* eslint-disable prettier/prettier */
 import { PubSub } from '@google-cloud/pubsub';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Datastore } from '@google-cloud/datastore';
+import { randomUUID } from 'crypto';
 
 
 @Injectable()
@@ -8,6 +10,7 @@ export class MessageService {
 
   private pubsub: PubSub;
   private readonly datastore: Datastore;
+
 
   constructor() {
     this.pubsub = new PubSub();
@@ -28,16 +31,18 @@ export class MessageService {
     const chatEntity = {
       key: this.datastore.key('messages'),
       data: {
+        id: randomUUID(),
         chatId: message.chatId,
         sender: message.sender,
         content: message.content,
         attachment: message.attachment,
         expiring: message.expiring,
-        seenBy : [],
-        date : Date.now()
+        seenBy: [],
+        date: Date.now(),
+        expirationDate: message.expirationDate,
       },
     };
-    console.log("Sending message to the database");
+    console.log('Sending message to the database');
     await this.datastore.save(chatEntity);
   }
 
@@ -120,6 +125,21 @@ export class MessageService {
       data: message,
     });
     console.log("getting unread message end updating")
+
+  }
+
+
+  async deleteMessage(messageId: string): Promise<void> {
+
+    const query = this.datastore.createQuery('messages');
+    const [entities] = await this.datastore.runQuery(query);
+    const messageToDelete = entities.find((entity) => entity.id === messageId);
+  
+    if (!messageToDelete) {
+      throw new NotFoundException(`Message ${messageId} not found`);
+    }
+  
+    await this.datastore.delete(messageToDelete[this.datastore.KEY]);
 
   }
 

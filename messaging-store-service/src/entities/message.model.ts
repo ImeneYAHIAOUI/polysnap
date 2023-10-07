@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 export class MessageDTO {
     id : string;
     chatId: string;
