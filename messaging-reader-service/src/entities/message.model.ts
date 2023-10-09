@@ -11,6 +11,7 @@ export class MessageDTO {
     };
     expiring: boolean;
     expirationTime : number;
+    
 }
 
 

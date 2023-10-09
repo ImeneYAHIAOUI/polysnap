@@ -84,12 +84,11 @@ export class MessageService {
     .createQuery('messages');
 
   const [entities] = await this.datastore.runQuery(query);
-    const filteredMessages = entities.filter(entity => new Date(entity.date) >= specificDate && 
+    const filteredMessages = entities.filter(entity => new Date(entity.date) >= specificDate && (
     (!entity.expiring || !entity.seenBy.includes(userId) ) ||
      (( entity.expirationTime != null || entity.expirationTime != 0) && 
-      addMinutes( entity.date, entity.expirationTime) > new Date()) );
+      addMinutes(entity.date, entity.expirationTime) > new Date()) ) );
 
-  
     console.log("getting unread message end filtering")
 
     for (const message of filteredMessages) {
