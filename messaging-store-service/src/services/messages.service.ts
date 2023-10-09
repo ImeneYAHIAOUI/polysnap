@@ -28,6 +28,8 @@ export class MessageService {
 }
 
   async sendMessage(message) {
+    const bool = await this.checkIfChatExists(message.chatId);
+    if(!bool) return;
     const chatEntity = {
       key: this.datastore.key('messages'),
       data: {
@@ -39,7 +41,7 @@ export class MessageService {
         expiring: message.expiring,
         seenBy: [],
         date: Date.now(),
-        expirationTime: message.expirationTime,
+        expirationTime: message.expirationTime?0,
       },
     };
     console.log('Sending message to the database');
@@ -52,66 +54,14 @@ export class MessageService {
     const [chatEntities] = await this.datastore.runQuery(chats);
     const chat = chatEntities.find((entity) => entity.name === chatId);
     if (!chat) {
-      throw new NotFoundException(`Chat ${chatId} not found`);
+      console.log(`Chat ${chatId} not found`);
+      return false;
     }
     return true;
   }
-
-
-  async getUnreadMessages(chatId: string, userId: string): Promise<any[]> {
-
-    const chat = this.checkIfChatExists(chatId);
-
-    if (!chat) {
-        throw new NotFoundException(`Chat ${chatId} not found`);
-    }
-
-    console.log("getting unread message begin")
-    const query = this.datastore
-      .createQuery('messages');
-  
-    const [entities] = await this.datastore.runQuery(query);
-    const unreadMessages = entities.filter((entity) => !entity.seenBy.includes(userId) && entity.chatId === chatId);
-  
-    console.log("getting unread message end filtering")
-
-    for (const message of unreadMessages) {
-        console.log("messages "+ message.toString())
-      await this.updateMessage(message, userId);
-    }
-    return unreadMessages;
-  }
-
-  async getAllMessagesFromDate(chatId: string, userId: string, specificDate : Date): Promise<any[]> {
-
-    const chat = this.checkIfChatExists(chatId);
-
-    if (!chat) {
-      throw new NotFoundException(`Chat ${chatId} not found`);
-    }
-
-    console.log("getting all messages begin from date "+ specificDate)
-    const query = this.datastore
-      .createQuery('messages');
-  
-    const [entities] = await this.datastore.runQuery(query);
-    const filteredMessages = entities.filter(entity => new Date(entity.date) >= specificDate && 
-    (!entity.expiring || !entity.seenBy.includes(userId)));
-
-  
-    console.log("getting unread message end filtering")
-
-    for (const message of filteredMessages) {
-        console.log("messages "+ message.toString())
-      await this.updateMessage(message, userId);
-    }
-    return filteredMessages;
-  }
-
   
   async updateMessage(message: any, userId: string): Promise<void> {
     console.log("getting unread message begin updating")
-    // Update the entity to mark it as seen by the user
     if (!message.seenBy) {
       message.seenBy = [];
     }

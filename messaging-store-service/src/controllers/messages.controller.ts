@@ -14,14 +14,4 @@ export class MessageController {
     return 'Subscribed to topic';
   }
 
-  @Get('unread/:chatId/:userId')
-
-
-  async getUnreadMessages(
-    @Param('chatId') chatId: string,
-    @Param('userId') userId: string,
-  ): Promise<any[]> {
-    return this.messageService.getUnreadMessages(chatId, userId);
-  }
-
 }
