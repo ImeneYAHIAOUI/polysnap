@@ -47,7 +47,7 @@ export class MessageService {
         expiring: message.expiring,
         seenBy: [],
         date: Date.now(),
-        expirationTime: message.expirationTime?0,
+        expirationTime: message.expirationTime,
       },
     };
     console.log('Sending message to the database');
