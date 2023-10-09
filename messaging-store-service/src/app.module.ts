@@ -2,9 +2,6 @@
 import { Module } from '@nestjs/common';
 import { MessageController } from './controllers/messages.controller';
 import { MessageService } from './services/messages.service';
-
-import { MessagesCleanUpService } from './services/messagesCleanUp.service';
-import { MessageCleanupController } from './controllers/messagesCleanUp.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 
@@ -21,8 +18,8 @@ import { join } from 'path';
     entities: [join(__dirname, '**/**.entity{.ts,.js}')],
     synchronize: true,
   })],
-  controllers: [MessageController, MessageCleanupController],
-  providers: [MessageService, MessagesCleanUpService],
+  controllers: [MessageController],
+  providers: [MessageService]
 })
 export class AppModule {
   
