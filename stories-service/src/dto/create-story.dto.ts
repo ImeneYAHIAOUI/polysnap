@@ -1,7 +1,6 @@
 export class CreateStoryDto {
   title: string;
-  user: string;
+  userId: number;
   filename: string;
   format: string;
-  size: string;
 }

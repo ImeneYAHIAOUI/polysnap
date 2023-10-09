@@ -1,9 +1,8 @@
 export class StoryDto {
   id: number;
   title: string;
-  user: string;
+  userId: number;
   filename: string;
   format: string;
-  size: string;
   views: number;
 }

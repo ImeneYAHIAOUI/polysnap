@@ -1,4 +1,11 @@
-import { AfterInsert,Entity, PrimaryGeneratedColumn, Column, BeforeInsert, CreateDateColumn } from 'typeorm';
+import {
+  AfterInsert,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BeforeInsert,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Story {
@@ -9,7 +16,7 @@ export class Story {
   title: string;
 
   @Column()
-  user: string;
+  userId: number;
 
   @Column()
   filename: string;
@@ -20,12 +27,9 @@ export class Story {
   @Column()
   format: string;
 
-  @Column()
-  size: string;
   @CreateDateColumn({ type: 'timestamp' })
   creationTime: Date;
 
   @Column({ type: 'timestamp', nullable: true })
   expirationTime: Date;
-
 }

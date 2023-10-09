@@ -21,14 +21,17 @@ export class StorageController {
       );
       return url;
     } catch (error) {
-      this.logger.error(`Error generating upload URL for file: ${fileName}`,error, );
+      this.logger.error(
+        `Error generating upload URL for file: ${fileName}`,
+        error,
+      );
     }
   }
   @Get('download')
   async download(
     @Query('fileName') fileName: string,
-    @Query('viewerId') viewerId: string,
-    @Query('publisher') publisher: string,
+    @Query('viewerId') viewerId: number,
+    @Query('publisher') publisher: number,
   ): Promise<{ content: Buffer; url: string }> {
     try {
       this.logger.log('Attempting to download file:', fileName);
