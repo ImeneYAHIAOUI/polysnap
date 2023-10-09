@@ -5,13 +5,15 @@ import {
   HttpException,
   HttpStatus,
   Logger,
+  Param,
   Post,
   Query,
 } from '@nestjs/common';
 import { StoryService } from '../services/story.service';
 import { CreateStoryDto } from '../dto/create-story.dto';
 import { StoryDto } from '../dto/story.dto';
-import {UploadDto} from "../dto/upload.dto";
+import { UploadDto } from '../dto/upload.dto';
+import { DownloadDto } from '../dto/Download.dto';
 
 @Controller('story')
 export class StoryController {
@@ -34,13 +36,24 @@ export class StoryController {
   }
 
   @Post()
-  async createStory(@Body() createStoryDto: CreateStoryDto): Promise<UploadDto> {
+  async createStory(
+    @Body() createStoryDto: CreateStoryDto,
+  ): Promise<UploadDto> {
     this.logger.log(`Creating a new story`);
     return this.storyService.createStory(createStoryDto);
   }
-  @Get('all')
-  async getAllStories(@Query('userId')userId : string): Promise<StoryDto[]> {
+
+  @Get('')
+  async getAllStories(@Query('userId') userId: number): Promise<StoryDto[]> {
     this.logger.log(`Getting all stories`);
     return this.storyService.getAllStories(userId);
+  }
+
+  @Get('contact/:userId')
+  async getContactStoryOfUser(
+    @Param('userId') userId: number,
+  ): Promise<DownloadDto[]> {
+    this.logger.log(`Getting all stories for contact ${userId}`);
+    return this.storyService.getAllStoriesForContact(userId);
   }
 }
