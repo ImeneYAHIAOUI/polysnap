@@ -2,7 +2,6 @@
 import { Module } from '@nestjs/common';
 import { MessageController } from './controllers/messages.controller';
 import { MessageService } from './services/messages.service';
-
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 
@@ -20,7 +19,7 @@ import { join } from 'path';
     synchronize: true,
   })],
   controllers: [MessageController],
-  providers: [MessageService],
+  providers: [MessageService]
 })
 export class AppModule {
   
