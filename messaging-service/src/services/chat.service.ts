@@ -25,6 +25,28 @@ export class ChatService {
       },
     };
     await this.datastore.save(chatEntity);
+
+
+  }
+
+  async getChatForUser(idUser: string): Promise<Chat[]> {
+    const chatEntities = await this.getChats();
+    const chatEntitiesResult = chatEntities.filter((entity) =>
+      entity.participants.includes(idUser)
+    );
+    return chatEntitiesResult;
+  }
+
+  
+  async getChats(): Promise<Chat[]> {
+    const chatsQuery = this.datastore.createQuery('chat');
+    const [chatEntities] = await this.datastore.runQuery(chatsQuery);
+    const chats = chatEntities.map((entity) => ({
+      id: entity.id,
+      name: entity.name,
+      participants: entity.participants,
+    }));
+    return chats;
   }
 
 

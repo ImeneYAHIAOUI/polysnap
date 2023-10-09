@@ -8,6 +8,9 @@ import { addMinutes } from 'date-fns';
 
 @Injectable()
 export class MessageService {
+  getAllMessages(chatName: string, userId: string, number: string): any[] | PromiseLike<any[]> {
+    throw new Error('Method not implemented.');
+  }
 
   private pubsub: PubSub;
   private readonly datastore: Datastore;
@@ -97,8 +100,37 @@ export class MessageService {
     }
     return filteredMessages;
   }
+ 
+  async getAllMessagesByNumbers(chatId: string, userId: string, n: number) : Promise<any[]> {
+    const chat = this.checkIfChatExists(chatId);
 
-  
+    if (!chat) {
+        throw new NotFoundException(`Chat ${chatId} not found`);
+    }
+
+    console.log("getting all messages begin from date ");
+
+    const query = this.datastore
+        .createQuery('messages');
+
+    const [entities] = await this.datastore.runQuery(query);
+    const filteredMessages = entities.filter(entity => (
+        (!entity.expiring || !entity.seenBy.includes(userId)) ||
+        ((entity.expirationTime != null || entity.expirationTime != 0) &&
+            addMinutes(entity.date, entity.expirationTime) > new Date())
+    ));
+
+    const firstMessages = filteredMessages.slice(0, n);
+
+    console.log("getting unread message end filtering");
+
+    for (const message of firstMessages) {
+        console.log("messages " + message.toString());
+        await this.updateMessage(message, userId);
+    }
+    return firstMessages;
+}
+
   async updateMessage(message: any, userId: string): Promise<void> {
     console.log("getting unread message begin updating")
     // Update the entity to mark it as seen by the user
