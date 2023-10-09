@@ -9,9 +9,9 @@ export class StorageService {
   private readonly logger = new Logger(StorageService.name);
   private readonly storage;
 
-    constructor(private readonly usersProxyService: UsersProxyService) {
-      this.storage = new Storage();
-    }
+  constructor(private readonly usersProxyService: UsersProxyService) {
+    this.storage = new Storage();
+  }
   async generate(fileName: string): Promise<string> {
     try {
       const options = {
@@ -24,7 +24,6 @@ export class StorageService {
         .bucket('story-bucket')
         .file(fileName)
         .getSignedUrl(options);
-
       this.logger.log('URL de téléversement signée PUT générée :');
       this.logger.log(url);
       this.logger.log(
@@ -55,18 +54,15 @@ export class StorageService {
        const url = `https://storage.google.com/${process.env.BUCKET_NAME}/${fileName}`;
        return { content: fileContent, url: url };
   }
-  async uploadFile(
-    bucketName: string,
-    originalname: string,
-    buffer: Buffer,
-  ): Promise<void> {
-    const bucket = this.storage.bucket(bucketName);
-   }
-
-
-
-
-
-
+async delete(fileName: string): Promise<void> {
+  try {
+    const file = this.storage.bucket('story-bucket').file(fileName);
+    await file.delete();
+    this.logger.log(`Deleted file: ${fileName}`);
+  } catch (error) {
+    this.logger.error(`Error deleting file ${fileName}: ${error.message}`, error.stack);
+    throw error;
+  }
+}
 
 }

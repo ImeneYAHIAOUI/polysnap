@@ -15,7 +15,7 @@ export class UsersProxyService {
   constructor(
     private configService: ConfigService,
     private readonly httpService: HttpService,
-  ) {
+  ){
     const dependenciesConfig =
       this.configService.get<DependenciesConfig>('dependencies');
     this._baseUrl = `${dependenciesConfig.user_service_url}`;

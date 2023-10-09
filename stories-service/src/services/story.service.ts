@@ -6,7 +6,7 @@ import { Repository, Like } from 'typeorm';
 import { Story } from '../entities/story.entity';
 import { StorageService } from './storage.service';
 import { UploadDto } from '../dto/upload.dto';
-
+import { Cron } from '@nestjs/schedule';
 @Injectable()
 export class StoryService {
   private readonly logger = new Logger(StoryService.name);
@@ -17,6 +17,31 @@ export class StoryService {
     private storageService: StorageService,
   ) {}
 
+  async removeExpiredStories() {
+    this.logger.log(`Removing expired stories`);
+    const now = new Date();
+    const allStories = await this.storiesRepository.find();
+    const expiredStories = allStories.filter(story => story.expirationTime < now);
+    for (const story of expiredStories) {
+      try {
+        await this.storageService.delete(story.filename);
+        this.logger.log(`Removed expired story: ${story.filename}`);
+      } catch (error) {
+        this.logger.error(`Error removing story: ${story.filename}`, error.stack);
+      }
+    }
+  }
+   // minuit @Cron('0 0 * * * *')
+   @Cron('0 * * * * *')
+   async handleCron() {
+     try {
+       this.logger.log('Cron job started');
+       await this.removeExpiredStories();
+       this.logger.log('Cron job completed successfully');
+     } catch (error) {
+       this.logger.error(`Error in cron job: ${error.message}`, error.stack);
+     }
+   }
   async searchStories(query: string): Promise<StoryDto[] | []> {
     this.logger.log(`Searching for stories with query ${query}`);
     return this.storiesRepository.find({
@@ -55,8 +80,7 @@ export class StoryService {
     where: { user: userId },
     select: ['id', 'title', 'user', 'filename', 'format', 'size', 'views', 'creationTime', 'expirationTime'],
     order: {
-      creationTime: 'ASC',
-    },
+      creationTime: 'ASC',},
   });
 }
 
