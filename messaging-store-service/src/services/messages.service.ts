@@ -3,6 +3,11 @@ import { PubSub } from '@google-cloud/pubsub';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Datastore } from '@google-cloud/datastore';
 import { randomUUID } from 'crypto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/entities/user.entity';
+import { Repository } from 'typeorm';
+
+
 
 
 @Injectable()
@@ -12,7 +17,8 @@ export class MessageService {
   private readonly datastore: Datastore;
 
 
-  constructor() {
+  constructor( @InjectRepository(User)
+  private usersRepository: Repository<User>) {
     this.pubsub = new PubSub();
     this.datastore = new Datastore();
   }
@@ -47,6 +53,16 @@ export class MessageService {
     console.log('Sending message to the database');
     await this.datastore.save(chatEntity);
   }
+
+  async checkIfUserExists(userId: number): Promise<boolean> {
+    const user = await this.usersRepository.findOne({where: { id: userId },});
+    if (!user) {
+      console.log(`User id ${userId} not found`);
+      return false;
+    }
+    return true;
+  }
+
 
 
   async checkIfChatExists(chatId: string): Promise<boolean> {
