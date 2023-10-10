@@ -21,7 +21,7 @@ export class StorageService {
         contentType: 'application/octet-stream',
       };
       const [url] = await this.storage
-        .bucket('story-bucket')
+        .bucket(process.env.BUCKET_NAME as string)
         .file(fileName)
         .getSignedUrl(options);
       this.logger.log('URL de téléversement signée PUT générée :');
@@ -65,17 +65,14 @@ export class StorageService {
     const url = `https://storage.google.com/${process.env.BUCKET_NAME}/${fileName}`;
     return { content: fileContent, url: url };
   }
-  async delete(fileName: string): Promise<void> {
-    try {
-      const file = this.storage.bucket('story-bucket').file(fileName);
-      await file.delete();
-      this.logger.log(`Deleted file: ${fileName}`);
-    } catch (error) {
-      this.logger.error(
-        `Error deleting file ${fileName}: ${error.message}`,
-        error.stack,
-      );
-      throw error;
-    }
+async delete(fileName: string): Promise<void> {
+  try {
+    const file = this.storage.bucket(process.env.BUCKET_NAME as string).file(fileName);
+    await file.delete();
+    this.logger.log(`Deleted file: ${fileName}`);
+  } catch (error) {
+    this.logger.error(`Error deleting file ${fileName}: ${error.message}`, error.stack);
+    throw error;
+  }}
   }
-}
+

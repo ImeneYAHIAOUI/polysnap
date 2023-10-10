@@ -18,14 +18,11 @@ import { DownloadDto } from '../dto/Download.dto';
 @Controller('story')
 export class StoryController {
   private readonly logger = new Logger(StoryController.name);
-
   constructor(private readonly storyService: StoryService) {}
-
   @Get()
   async hello() {
     return 'Hello from story controller';
   }
-
   @Get('search')
   async searchStories(@Query('query') query: string) {
     this.logger.log(`Received search request for ${query}`);
