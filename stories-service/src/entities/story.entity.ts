@@ -1,4 +1,10 @@
-import { AfterInsert,Entity, PrimaryGeneratedColumn, Column, BeforeInsert, CreateDateColumn } from 'typeorm';
+import {
+  AfterInsert,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Story {
@@ -9,23 +15,20 @@ export class Story {
   title: string;
 
   @Column()
-  user: string;
+  userId: number;
 
   @Column()
   filename: string;
 
   @Column()
-  views: number;
-
-  @Column()
   format: string;
 
-  @Column()
-  size: string;
   @CreateDateColumn({ type: 'timestamp' })
   creationTime: Date;
 
+  @Column({ type: 'boolean', default: false })
+    isRemoved: boolean;
+
   @Column({ type: 'timestamp', nullable: true })
   expirationTime: Date;
-
 }

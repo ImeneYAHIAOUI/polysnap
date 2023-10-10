@@ -13,5 +13,9 @@ export class ChatController {
     return 'Chat created successfully';
   }
 
+  @Get("/:userId")
+  async getChatsUser( @Param('userId') userId: string){
+    return this.chatService.getChatForUser(userId);
+  }
 
 }

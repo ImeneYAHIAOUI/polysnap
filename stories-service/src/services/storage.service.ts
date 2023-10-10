@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Storage } from '@google-cloud/storage';
-import {FileNotFoundException } from '../exceptions/file-not-found.exception';
+import { FileNotFoundException } from '../exceptions/file-not-found.exception';
 import { UsersProxyService } from './users-service-proxy/user-service-proxy.service';
 import { UnauthorizedException } from '@nestjs/common';
 
@@ -9,9 +9,9 @@ export class StorageService {
   private readonly logger = new Logger(StorageService.name);
   private readonly storage;
 
-    constructor(private readonly usersProxyService: UsersProxyService) {
-      this.storage = new Storage();
-    }
+  constructor(private readonly usersProxyService: UsersProxyService) {
+    this.storage = new Storage();
+  }
   async generate(fileName: string): Promise<string> {
     try {
       const options = {
@@ -21,10 +21,9 @@ export class StorageService {
         contentType: 'application/octet-stream',
       };
       const [url] = await this.storage
-        .bucket('story-bucket')
+        .bucket(process.env.BUCKET_NAME)
         .file(fileName)
         .getSignedUrl(options);
-
       this.logger.log('URL de téléversement signée PUT générée :');
       this.logger.log(url);
       this.logger.log(
@@ -39,34 +38,55 @@ export class StorageService {
       throw error;
     }
   }
-  async download(fileName: string,viewerId: string, publisherId : string): Promise<{ content: Buffer, url: string }> {
-        this.logger.log(`Downloading story for user ${viewerId} from user ${publisherId}`);
-        const contacts = await this.usersProxyService.getContactOfUser(publisherId);
-        this.logger.log(`Retrieved contacts for user ${publisherId}:`, contacts);
-        if (!contacts.some(contact => contact.contactId.toString() === viewerId)) {
-            throw new UnauthorizedException(`The user ${viewerId} is not authorized to access the file ${fileName}.`);
-        }
-       const file = this.storage.bucket(process.env.BUCKET_NAME).file(fileName);
-        const [exists] = await file.exists();
-        if (!exists) {
-            throw new FileNotFoundException(`Le fichier ${fileName} n'existe pas.`);
-        }
-       const [fileContent] = await file.download();
-       const url = `https://storage.google.com/${process.env.BUCKET_NAME}/${fileName}`;
-       return { content: fileContent, url: url };
+  async download(
+    fileName: string,
+    viewerId: number,
+    publisherId: number,
+  ): Promise<{ content: Buffer; url: string }> {
+    this.logger.log(
+      `Downloading story for user ${viewerId} from user ${publisherId}`,
+    );
+    const contacts = await this.usersProxyService.getContactOfUser(publisherId);
+    this.logger.log(`Retrieved contacts for user ${publisherId}:`, contacts);
+    if (
+      !contacts.some((contact) => contact.contactId === viewerId) &&
+      publisherId !== viewerId
+    ) {
+      throw new UnauthorizedException(
+        `The user ${viewerId} is not authorized to access the file ${fileName}.`,
+      );
+    }
+    const file = this.storage.bucket(process.env.BUCKET_NAME).file(fileName);
+    const [exists] = await file.exists();
+    if (!exists) {
+      throw new FileNotFoundException(`Le fichier ${fileName} n'existe pas.`);
+    }
+    const [fileContent] = await file.download();
+    const url = `https://storage.google.com/${process.env.BUCKET_NAME}/${fileName}`;
+    return { content: fileContent, url: url };
   }
-  async uploadFile(
-    bucketName: string,
-    originalname: string,
-    buffer: Buffer,
-  ): Promise<void> {
-    const bucket = this.storage.bucket(bucketName);
-   }
+  async delete(fileName: string): Promise<void> {
+    try {
+      const file = this.storage.bucket(process.env.BUCKET_NAME).file(fileName);
+      await file.delete();
+      this.logger.log(`Deleted file: ${fileName}`);
+    } catch (error) {
+      this.logger.error(
+        `Error deleting file ${fileName}: ${error.message}`,
+        error.stack,
+      );
+      throw error;
+    }
+  }
 
+  async verifyStoryExists(fileName: string): Promise<boolean> {
+    this.logger.log(`Verify if ${fileName} exists`);
 
+    const res = await this.storage
+      .bucket(process.env.BUCKET_NAME)
+      .file(fileName)
+      .exists();
 
-
-
-
-
+    return res;
+  }
 }

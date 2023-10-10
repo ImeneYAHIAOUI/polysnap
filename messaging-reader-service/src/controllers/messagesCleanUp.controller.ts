@@ -9,8 +9,6 @@ export class MessageCleanupController {
 
     @Post()
     async cleanupMessages(  ) {
-        // Implement your logic here to check and delete messages in Firestore
-        // For example: 
         this.messageCleanUp.cleanUpMessages();
     }
 }

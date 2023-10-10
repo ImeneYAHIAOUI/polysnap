@@ -15,18 +15,20 @@ export class UsersProxyService {
   constructor(
     private configService: ConfigService,
     private readonly httpService: HttpService,
-  ) {
+  ){
     const dependenciesConfig =
       this.configService.get<DependenciesConfig>('dependencies');
     this._baseUrl = `${dependenciesConfig.user_service_url}`;
   }
-  async getContactOfUser(userId: string): Promise<ContactDto[]> {
+  async getContactOfUser(userId: number): Promise<ContactDto[]> {
     try {
-    logger.log(`${this._baseUrl}${this._usersServicePath}/contacts?UserId=${userId}`);
+      logger.log(
+        `${this._baseUrl}${this._usersServicePath}/contacts?UserId=${userId}`,
+      );
       const response: AxiosResponse<ContactDto[]> = await firstValueFrom(
-
         this.httpService.get<ContactDto[]>(
-          `${this._baseUrl}${this._usersServicePath}/contacts?UserId=${userId}`,),
+          `${this._baseUrl}${this._usersServicePath}/contacts?UserId=${userId}`,
+        ),
       );
       logger.log(`retrieving user contacts  successfully`);
 
