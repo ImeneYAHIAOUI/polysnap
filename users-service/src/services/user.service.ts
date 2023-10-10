@@ -27,9 +27,10 @@ export class UserService implements IUserService {
 
   async signUp(userDetails: SignUpDetails): Promise<User> {
     this.logger.log(`Signing up user ${userDetails.username}`);
-    const existingUser = await this.usersRepository.findOne({
-      where: [{ username: userDetails.username }, { email: userDetails.email }],
-    });
+    const existingUser = await this.usersRepository.findOneBy([
+      { username: userDetails.username },
+      { email: userDetails.email },
+    ]);
     if (existingUser) {
       this.logger.error(`User ${userDetails.username} already exists`);
       throw new UserAlreadyExists();
@@ -49,37 +50,38 @@ export class UserService implements IUserService {
 
   async lookUpUser(findUserParams: LookUpUserParams): Promise<User> {
     this.logger.log(`Looking up user ${JSON.stringify(findUserParams)}`);
-    const user = await this.usersRepository.findOne({
-      where: [
-        { id: findUserParams.id },
-        { email: findUserParams.email },
-        { username: findUserParams.username },
-      ],
-    });
+    const user = await this.usersRepository.findOneBy([
+      { id: findUserParams.id },
+      { email: findUserParams.email },
+      { username: findUserParams.username },
+    ]);
     if (!user) {
       this.logger.error(`User ${JSON.stringify(findUserParams)} not found`);
       throw new UserNotFoundException();
     }
     return user;
   }
+
   async lookUpUserId(userId: number): Promise<User> {
-      const user = await this.usersRepository.findOne({where: { id: userId },});
-      if (!user) {
-        this.logger.error(`User id ${userId} not found`);
-        throw new UserNotFoundException();
-      }
-      return user;
+    const user = await this.usersRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      this.logger.error(`User id ${userId} not found`);
+      throw new UserNotFoundException();
     }
- async getContactsOfUser(userId: number): Promise<Contact[]> {
+    return user;
+  }
+
+  async getContactsOfUser(userId: number): Promise<Contact[]> {
     const user = this.lookUpUserId(userId);
     const contacts = await this.contactRepository.find({
-      where: { userId: userId }    });
+      where: { userId: userId },
+    });
     return contacts;
   }
-    async getUsers(): Promise<User[]> {
-     const users = await this.usersRepository.find();
-     return users;
-   }
+  async getUsers(): Promise<User[]> {
+    const users = await this.usersRepository.find();
+    return users;
+  }
 
   async addContact(addContactParams: AddContactParams): Promise<User> {
     this.logger.log(`Adding contact ${JSON.stringify(addContactParams)}`);

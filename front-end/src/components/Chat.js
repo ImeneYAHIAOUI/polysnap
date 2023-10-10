@@ -12,7 +12,7 @@ import SendIcon from "@mui/icons-material/Send";
 
 const messages = [
   { id: 1, text: "Hi there!", sender: "bot" },
-  { id: 2, text: "Hello!", sender: "user" },
+  { id: 2, text: "Hello!", sender: "test" },
   { id: 3, text: "How can I assist you today?", sender: "bot" },
   { id: 4, text: "I'd like to know more about your products", sender: "bot" },
 
@@ -57,7 +57,7 @@ const Chat = () => {
           <Grid item xs={1}>
             <Button
               fullWidth
-              style={{ height:"55px" }}
+              style={{ height:"50px" }}
               size="large"
               color="primary"
               variant="contained"
@@ -73,23 +73,28 @@ const Chat = () => {
 };
 
 const Message = ({ message }) => {
-  const isBot = message.sender === "bot";
+  const isNotUser = message.sender !== window.localStorage.getItem("user");
 
   return (
     <Box
       sx={{
         display: "flex",
-        justifyContent: isBot ? "flex-start" : "flex-end",
+        justifyContent: isNotUser ? "flex-start" : "flex-end",
         mb: 2,
       }}
     >
+      <Avatar sx={{ m: 1 }}>{message.sender[0].toUpperCase()}</Avatar>
       <Paper
         variant="outlined"
         sx={{
           p: 1,
-          backgroundColor: isBot ? "primary.light" : "secondary.light",
+          backgroundColor: isNotUser ? "#F1EFEF" : "primary.main",
+          color: isNotUser ? "#000" : "#fff",
         }}
       >
+        <Typography variant="caption" sx={{ color: "black", textAlign:"left" }}>
+          {message.sender}
+        </Typography>
         <Typography variant="body1">{message.text}</Typography>
       </Paper>
     </Box>
