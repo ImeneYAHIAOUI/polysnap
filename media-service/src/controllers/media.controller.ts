@@ -1,12 +1,15 @@
 import { Body, Controller, Get, Inject, Logger, Post } from '@nestjs/common';
 import { MediaMetaDataExistsDto } from 'src/dtos/types';
 import { IMediaService } from 'src/interfaces/media.interface';
+import { MediaService } from 'src/services/media.service';
 
 @Controller('/media')
 export class MediaController {
   private readonly logger = new Logger(MediaController.name);
 
-  constructor(@Inject() private mediaMetaDataService: IMediaService) {}
+  constructor(
+    @Inject(MediaService.name) private readonly mediaMetaDataService: IMediaService,
+  ) {}
 
   @Get()
   healthCheck(): string {

@@ -1,11 +1,14 @@
-import { Logger, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { MediaController } from './controllers/media.controller';
 import { MediaService } from './services/media.service';
 
 @Module({
-  imports: [],
   controllers: [MediaController],
-  providers: [MediaService, Logger],
-  exports: [MediaService],
+  providers: [
+    {
+      provide: MediaService.name,
+      useClass: MediaService,
+    },
+  ],
 })
 export class MediaModule {}
