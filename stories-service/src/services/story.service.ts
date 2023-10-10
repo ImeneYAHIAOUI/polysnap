@@ -23,23 +23,22 @@ export class StoryService {
 async emptyStoriesDB(): Promise<void> {
   await this.storiesRepository.clear();
 }
-
 async removeExpiredStories(): Promise<void> {
   const now = new Date();
   const allStories = await this.storiesRepository.find();
   const expiredStories = allStories.filter(
-    (story) => story.expirationTime < now,
+    (story) => !story.isRemoved && story.expirationTime < now,
   );
+
   for (const story of expiredStories) {
     this.logger.log(`Removing expired stories`);
     try {
       await this.storageService.delete(story.filename);
+      story.isRemoved = true;
+      await this.storiesRepository.save(story);
       this.logger.log(`Removed expired story: ${story.filename}`);
     } catch (error) {
-      this.logger.error(
-        `Error removing story: ${story.filename}`,
-        error.stack,
-      );
+      this.logger.error(`Error removing story: ${story.filename}`, error.stack);
     }
   }
 }
