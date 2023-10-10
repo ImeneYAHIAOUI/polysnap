@@ -19,9 +19,7 @@ import { SaveStoryDto } from '../dto/saveStory.dto';
 @Controller('story')
 export class StoryController {
   private readonly logger = new Logger(StoryController.name);
-
   constructor(private readonly storyService: StoryService) {}
-
 
   @Get('search')
   async searchStories(@Query('query') query: string) {
@@ -30,6 +28,10 @@ export class StoryController {
       throw new HttpException('Provide a valid query', HttpStatus.BAD_REQUEST);
 
     return this.storyService.searchStories(query);
+  }
+  @Post()
+  async emptyStoriesDB() {
+    return this.storyService.emptyStoriesDB();
   }
 
   @Post()

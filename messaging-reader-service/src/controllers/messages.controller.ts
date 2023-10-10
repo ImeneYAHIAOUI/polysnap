@@ -20,9 +20,18 @@ export class MessageController {
     @Param('userId') userId: string,
     @Query('date') date: string,
   ): Promise<any[]> {
-
-
     return this.messageService.getAllMessagesFromDate(chatName, userId, new Date(date));
   }
+
+  @Get('/:userId')
+  async getAllMessages(
+    @Query('chatName') chatName: string,
+    @Query('number') number: number,
+    @Param('userId') userId: string,
+  ): Promise<any[]> {
+    return this.messageService.getAllMessagesByNumbers(chatName, userId, number);
+  }
+
+
 
 }

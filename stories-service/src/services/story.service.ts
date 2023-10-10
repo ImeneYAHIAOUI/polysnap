@@ -6,7 +6,8 @@ import { Repository, Like, MoreThanOrEqual } from 'typeorm';
 import { Story } from '../entities/story.entity';
 import { StorageService } from './storage.service';
 import { UploadDto } from '../dto/upload.dto';
-import { Cron } from '@nestjs/schedule';
+import * as cron from 'cron';
+
 import { DownloadDto } from '../dto/Download.dto';
 import { UsersProxyService } from './users-service-proxy/user-service-proxy.service';
 import { SaveStoryDto } from '../dto/saveStory.dto';
@@ -14,6 +15,7 @@ import { SaveStoryDto } from '../dto/saveStory.dto';
 @Injectable()
 export class StoryService {
   private readonly logger = new Logger(StoryService.name);
+  private rocketCronJob: any;
 
   constructor(
     @InjectRepository(Story)
@@ -21,7 +23,13 @@ export class StoryService {
     private storageService: StorageService,
     private readonly usersProxyService: UsersProxyService,
   ) {}
-
+  onApplicationBootstrap() {
+        this.rocketCronJob = new cron.CronJob('0 * * * * *', () => {this.handleCron();});
+        this.rocketCronJob.start();
+  }
+  async emptyStoriesDB(){
+     this.storiesRepository.clear();
+  }
   async removeExpiredStories() {
     this.logger.log(`Removing expired stories`);
     const now = new Date();
@@ -41,8 +49,6 @@ export class StoryService {
       }
     }
   }
-  // minuit @Cron('0 0 * * * *')
-  @Cron('0 * * * * *')
   async handleCron() {
     try {
       this.logger.log('Cron job started');
