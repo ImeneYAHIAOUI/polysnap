@@ -55,8 +55,11 @@ export class MessageService {
   }
 
   async checkIfUserExists(userId: number): Promise<boolean> {
-    const user = await this.usersRepository.findOne({where: { id: userId },});
-    if (!user) {
+
+    const usersUrl = "https://users-dot-cloud-398911.lm.r.appspot.com/users/lookup?id=" + userId;
+    const response = await fetch(usersUrl);
+    const data = await response.json();
+    if (!data) {
       console.log(`User id ${userId} not found`);
       return false;
     }
