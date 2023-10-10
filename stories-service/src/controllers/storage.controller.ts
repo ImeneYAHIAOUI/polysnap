@@ -32,16 +32,14 @@ export class StorageController {
     @Query('fileName') fileName: string,
     @Query('viewerId') viewerId: number,
     @Query('publisher') publisher: number,
-  ): Promise<{ content: Buffer; url: string }> {
+  ): Promise<{ url: string }> {
     try {
       this.logger.log('Attempting to download file:', fileName);
-      const { content, url } = await this.storageService.download(
-        fileName,
-        viewerId,
-        publisher,
-      );
+      const { url } = {
+        url: await this.storageService.download(fileName, viewerId, publisher),
+      };
       this.logger.log('File downloaded successfully: ${fileName}');
-      return { content, url };
+      return { url };
     } catch (error) {
       if (error instanceof FileNotFoundException) {
         this.logger.error('File not found:', error);

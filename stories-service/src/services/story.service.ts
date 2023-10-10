@@ -85,16 +85,18 @@ export class StoryService {
     });
     const storiesDownload: DownloadDto[] = [];
     for (const story of storyList) {
-      const url = await this.storageService.download(
-        story.filename,
-        userId,
-        userId,
-      );
-      const download: DownloadDto = {
-        downloadUrl: url,
-        story: story,
-      };
-      storiesDownload.push(download);
+      try {
+        const url = await this.storageService.download(
+          story.filename,
+          userId,
+          userId,
+        );
+        const download: DownloadDto = {
+          downloadUrl: url,
+          story: story,
+        };
+        storiesDownload.push(download);
+      } catch (UnauthorizedException) {}
     }
 
     for (const contact of contactList) {
@@ -108,20 +110,22 @@ export class StoryService {
       });
       for (const story of stories) {
         console.log(story.expirationTime, currentDateTime);
-        const url = await this.storageService.download(
-          story.filename,
-          userId,
-          contact.id,
-        );
-        const download: DownloadDto = {
-          downloadUrl: url,
-          story: story,
-        };
-        storiesDownload.push(download);
+        try {
+          const url = await this.storageService.download(
+            story.filename,
+            userId,
+            contact.id,
+          );
+          const download: DownloadDto = {
+            downloadUrl: url,
+            story: story,
+          };
+          storiesDownload.push(download);
+        } catch (UnauthorizedException) {}
       }
-    }
 
-    return storiesDownload;
+      return storiesDownload;
+    }
   }
 
   async saveStory(saveStoryDto: SaveStoryDto) {

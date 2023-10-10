@@ -1,8 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { Storage } from '@google-cloud/storage';
 import { FileNotFoundException } from '../exceptions/file-not-found.exception';
 import { UsersProxyService } from './users-service-proxy/user-service-proxy.service';
-import { UnauthorizedException } from '@nestjs/common';
 
 @Injectable()
 export class StorageService {
@@ -42,7 +41,7 @@ export class StorageService {
     fileName: string,
     viewerId: number,
     publisherId: number,
-  ): Promise<{ content: Buffer; url: string }> {
+  ): Promise<string> {
     this.logger.log(
       `Downloading story for user ${viewerId} from user ${publisherId}`,
     );
@@ -61,9 +60,7 @@ export class StorageService {
     if (!exists) {
       throw new FileNotFoundException(`Le fichier ${fileName} n'existe pas.`);
     }
-    const [fileContent] = await file.download();
-    const url = `https://storage.google.com/${process.env.BUCKET_NAME}/${fileName}`;
-    return { content: fileContent, url: url };
+    return `https://storage.google.com/${process.env.BUCKET_NAME}/${fileName}`;
   }
   async delete(fileName: string): Promise<void> {
     try {
@@ -82,11 +79,9 @@ export class StorageService {
   async verifyStoryExists(fileName: string): Promise<boolean> {
     this.logger.log(`Verify if ${fileName} exists`);
 
-    const res = await this.storage
+    return await this.storage
       .bucket(process.env.BUCKET_NAME)
       .file(fileName)
       .exists();
-
-    return res;
   }
 }
