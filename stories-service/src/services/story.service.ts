@@ -126,9 +126,10 @@ async removeExpiredStories(): Promise<void> {
       userId: saveStoryDto.userId,
       filename: saveStoryDto.filename,
       format: saveStoryDto.format,
+      isRemoved: false,
     });
-    const expirationDate = new Date();
-    expirationDate.setHours(expirationDate.getHours() + 24);
+    const expirationDate = new Date(newStory.creationTime);
+    expirationDate.setHours(expirationDate.getHours() + 3);
     newStory.expirationTime = expirationDate;
     const createdStory = await this.storiesRepository.save(newStory);
     return createdStory;
