@@ -6,7 +6,6 @@ import { Repository, Like, MoreThanOrEqual } from 'typeorm';
 import { Story } from '../entities/story.entity';
 import { StorageService } from './storage.service';
 import { UploadDto } from '../dto/upload.dto';
-import * as cron from 'cron';
 
 import { DownloadDto } from '../dto/Download.dto';
 import { UsersProxyService } from './users-service-proxy/user-service-proxy.service';
@@ -15,8 +14,6 @@ import { SaveStoryDto } from '../dto/saveStory.dto';
 @Injectable()
 export class StoryService {
   private readonly logger = new Logger(StoryService.name);
-  private rocketCronJob: any;
-
   constructor(
     @InjectRepository(Story)
     private storiesRepository: Repository<Story>,
