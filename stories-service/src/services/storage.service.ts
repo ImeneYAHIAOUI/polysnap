@@ -78,4 +78,15 @@ export class StorageService {
       throw error;
     }
   }
+
+  async verifyStoryExists(fileName: string): Promise<boolean> {
+    this.logger.log(`Verify if ${fileName} exists`);
+
+    const res = await this.storage
+      .bucket(process.env.BUCKET_NAME)
+      .file(fileName)
+      .exists();
+
+    return res;
+  }
 }

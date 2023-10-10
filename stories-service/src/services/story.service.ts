@@ -10,6 +10,7 @@ import { UploadDto } from '../dto/upload.dto';
 import { DownloadDto } from '../dto/Download.dto';
 import { UsersProxyService } from './users-service-proxy/user-service-proxy.service';
 import { SaveStoryDto } from '../dto/saveStory.dto';
+import { FileNotFoundException } from '../exceptions/file-not-found.exception';
 
 @Injectable()
 export class StoryService {
@@ -20,30 +21,29 @@ export class StoryService {
     private storageService: StorageService,
     private readonly usersProxyService: UsersProxyService,
   ) {}
-async emptyStoriesDB(): Promise<void> {
-  await this.storiesRepository.clear();
-}
+  async emptyStoriesDB(): Promise<void> {
+    await this.storiesRepository.clear();
+  }
 
-async removeExpiredStories(): Promise<void> {
-  const now = new Date();
-  const allStories = await this.storiesRepository.find();
-  const expiredStories = allStories.filter(
-    (story) => story.expirationTime < now,
-  );
-  for (const story of expiredStories) {
-    this.logger.log(`Removing expired stories`);
-    try {
-      await this.storageService.delete(story.filename);
-      this.logger.log(`Removed expired story: ${story.filename}`);
-    } catch (error) {
-      this.logger.error(
-        `Error removing story: ${story.filename}`,
-        error.stack,
-      );
+  async removeExpiredStories(): Promise<void> {
+    const now = new Date();
+    const allStories = await this.storiesRepository.find();
+    const expiredStories = allStories.filter(
+      (story) => story.expirationTime < now,
+    );
+    for (const story of expiredStories) {
+      this.logger.log(`Removing expired stories`);
+      try {
+        await this.storageService.delete(story.filename);
+        this.logger.log(`Removed expired story: ${story.filename}`);
+      } catch (error) {
+        this.logger.error(
+          `Error removing story: ${story.filename}`,
+          error.stack,
+        );
+      }
     }
   }
-}
-
 
   async searchStories(query: string): Promise<StoryDto[] | []> {
     this.logger.log(`Searching for stories with query ${query}`);
@@ -122,6 +122,8 @@ async removeExpiredStories(): Promise<void> {
   }
 
   async saveStory(saveStoryDto: SaveStoryDto) {
+    if (!(await this.storageService.verifyStoryExists(saveStoryDto.filename)))
+      throw new FileNotFoundException(saveStoryDto.filename);
     const newStory = this.storiesRepository.create({
       title: saveStoryDto.title,
       userId: saveStoryDto.userId,
