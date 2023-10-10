@@ -31,6 +31,10 @@ export class StoryController {
 
     return this.storyService.searchStories(query);
   }
+  @Post()
+  async emptyStoriesDB(){
+      return this.storyService.emptyStoriesDB();
+  }
 
   @Post()
   async createStory(
