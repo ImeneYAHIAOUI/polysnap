@@ -73,6 +73,7 @@ export class UserService implements IUserService {
 
   async getContactsOfUser(userId: number): Promise<Contact[]> {
     const user = this.lookUpUserId(userId);
+
     const contacts = await this.contactRepository.find({
       where: { userId: userId },
     });

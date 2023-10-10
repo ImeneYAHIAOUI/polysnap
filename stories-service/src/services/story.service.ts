@@ -133,12 +133,13 @@ export class StoryService {
       filename: saveStoryDto.filename,
       format: saveStoryDto.format,
       isRemoved: false,
+      creationTime: new Date(),
     });
+    console.log(newStory.creationTime);
     const expirationDate = new Date(newStory.creationTime);
     expirationDate.setHours(expirationDate.getHours() + 3);
     newStory.expirationTime = expirationDate;
-    const createdStory = await this.storiesRepository.save(newStory);
-    return createdStory;
+    return await this.storiesRepository.save(newStory);
   }
 
   async createStory(createStoryDto: CreateStoryDto): Promise<UploadDto> {

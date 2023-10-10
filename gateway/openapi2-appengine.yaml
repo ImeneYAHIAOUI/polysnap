@@ -14,7 +14,7 @@ paths:
       summary: manage stories
       operationId: stories
       x-google-backend:
-        address: https://stories-dot-platinum-factor-367914.oa.r.appspot.com/story
+        address: https://stories-dot-cloud-398911.lm.r.appspot.com/story
       responses:
         '200':
           description: A successful response
@@ -25,7 +25,7 @@ paths:
       summary: manage users
       operationId: users
       x-google-backend:
-        address: https://users-dot-platinum-factor-367914.oa.r.appspot.com/users
+        address: https://users-dot-cloud-398911.lm.r.appspot.com/users
       responses:
         '200':
           description: A successful response
@@ -36,18 +36,40 @@ paths:
       summary: manage reading messages
       operationId: messagereader
       x-google-backend:
-        address: https://messagereader-dot-platinum-factor-367914.oa.r.appspot.com/
+        address: https://messagereader-dot-cloud-398911.lm.r.appspot.com/
       responses:
         '200':
           description: A successful response
           schema:
             type: string
-  /messagewriter:
+  /messagesender:
     get:
-      summary: manage writing messages
-      operationId: messagewriter
+      summary: manage sending messages
+      operationId: messagesender
       x-google-backend:
-        address: https://messagewriter-dot-platinum-factor-367914.oa.r.appspot.com/messages
+        address: https://messagesender-dot-cloud-398911.lm.r.appspot.com/
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string
+  /messagestore:
+    get:
+      summary: manage storing messages
+      operationId: messagestore
+      x-google-backend:
+        address: https://messagestore-dot-cloud-398911.lm.r.appspot.com/
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string
+  /media:
+    get:
+      summary: manage media
+      operationId: media-service
+      x-google-backend:
+        address: https://media-service-dot-cloud-398911.lm.r.appspot.com/
       responses:
         '200':
           description: A successful response
