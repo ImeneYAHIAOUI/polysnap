@@ -29,7 +29,13 @@ export class StoryController {
 
     return this.storyService.searchStories(query);
   }
-  @Post()
+
+  @Post('remove-expired')
+  async removeExpiredStories() {
+    return this.storyService.removeExpiredStories();
+  }
+
+  @Post('empty-db')
   async emptyStoriesDB() {
     return this.storyService.emptyStoriesDB();
   }
