@@ -28,14 +28,13 @@ async emptyStoriesDB(): Promise<void> {
 }
 
 async removeExpiredStories(): Promise<void> {
-  this.logger.log(`Removing expired stories`);
   const now = new Date();
   const allStories = await this.storiesRepository.find();
   const expiredStories = allStories.filter(
     (story) => story.expirationTime < now,
   );
-
   for (const story of expiredStories) {
+    this.logger.log(`Removing expired stories`);
     try {
       await this.storageService.delete(story.filename);
       this.logger.log(`Removed expired story: ${story.filename}`);
