@@ -26,6 +26,9 @@ export class Story {
   @CreateDateColumn({ type: 'timestamp' })
   creationTime: Date;
 
+  @Column({ type: 'boolean', default: false })
+    isRemoved: boolean;
+
   @Column({ type: 'timestamp', nullable: true })
   expirationTime: Date;
 }

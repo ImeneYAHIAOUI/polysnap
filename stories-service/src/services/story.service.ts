@@ -21,20 +21,23 @@ export class StoryService {
     private storageService: StorageService,
     private readonly usersProxyService: UsersProxyService,
   ) {}
+
   async emptyStoriesDB(): Promise<void> {
     await this.storiesRepository.clear();
   }
-
   async removeExpiredStories(): Promise<void> {
     const now = new Date();
     const allStories = await this.storiesRepository.find();
     const expiredStories = allStories.filter(
-      (story) => story.expirationTime < now,
+      (story) => !story.isRemoved && story.expirationTime < now,
     );
+
     for (const story of expiredStories) {
       this.logger.log(`Removing expired stories`);
       try {
         await this.storageService.delete(story.filename);
+        story.isRemoved = true;
+        await this.storiesRepository.save(story);
         this.logger.log(`Removed expired story: ${story.filename}`);
       } catch (error) {
         this.logger.error(
@@ -129,9 +132,10 @@ export class StoryService {
       userId: saveStoryDto.userId,
       filename: saveStoryDto.filename,
       format: saveStoryDto.format,
+      isRemoved: false,
     });
-    const expirationDate = new Date();
-    expirationDate.setHours(expirationDate.getHours() + 24);
+    const expirationDate = new Date(newStory.creationTime);
+    expirationDate.setHours(expirationDate.getHours() + 3);
     newStory.expirationTime = expirationDate;
     const createdStory = await this.storiesRepository.save(newStory);
     return createdStory;
