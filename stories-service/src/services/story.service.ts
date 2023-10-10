@@ -23,6 +23,7 @@ export class StoryService {
 async emptyStoriesDB(): Promise<void> {
   await this.storiesRepository.clear();
 }
+<<<<<<< Updated upstream
 async removeExpiredStories(): Promise<void> {
   const now = new Date();
   const allStories = await this.storiesRepository.find();
@@ -39,6 +40,26 @@ async removeExpiredStories(): Promise<void> {
       this.logger.log(`Removed expired story: ${story.filename}`);
     } catch (error) {
       this.logger.error(`Error removing story: ${story.filename}`, error.stack);
+=======
+
+async removeExpiredStories(): Promise<void> {
+  this.logger.log(`Removing expired stories`);
+  const now = new Date();
+  const allStories = await this.storiesRepository.find();
+  const expiredStories = allStories.filter(
+    (story) => story.expirationTime < now,
+  );
+
+  for (const story of expiredStories) {
+    try {
+      await this.storageService.delete(story.filename);
+      this.logger.log(`Removed expired story: ${story.filename}`);
+    } catch (error) {
+      this.logger.error(
+        `Error removing story: ${story.filename}`,
+        error.stack,
+      );
+>>>>>>> Stashed changes
     }
   }
 }

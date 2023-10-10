@@ -29,7 +29,10 @@ export class StoryController {
 
     return this.storyService.searchStories(query);
   }
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
   @Post('remove-expired')
   async removeExpiredStories() {
     return this.storyService.removeExpiredStories();
