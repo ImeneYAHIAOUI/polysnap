@@ -3,7 +3,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  BeforeInsert,
   CreateDateColumn,
 } from 'typeorm';
 
@@ -20,9 +19,6 @@ export class Story {
 
   @Column()
   filename: string;
-
-  @Column()
-  views: number;
 
   @Column()
   format: string;

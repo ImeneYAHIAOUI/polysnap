@@ -21,7 +21,7 @@ export class StorageService {
         contentType: 'application/octet-stream',
       };
       const [url] = await this.storage
-        .bucket('story-bucket')
+        .bucket(process.env.BUCKET_NAME)
         .file(fileName)
         .getSignedUrl(options);
       this.logger.log('URL de téléversement signée PUT générée :');
@@ -67,7 +67,7 @@ export class StorageService {
   }
   async delete(fileName: string): Promise<void> {
     try {
-      const file = this.storage.bucket('story-bucket').file(fileName);
+      const file = this.storage.bucket(process.env.BUCKET_NAME).file(fileName);
       await file.delete();
       this.logger.log(`Deleted file: ${fileName}`);
     } catch (error) {

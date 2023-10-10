@@ -14,6 +14,7 @@ import { CreateStoryDto } from '../dto/create-story.dto';
 import { StoryDto } from '../dto/story.dto';
 import { UploadDto } from '../dto/upload.dto';
 import { DownloadDto } from '../dto/Download.dto';
+import { SaveStoryDto } from '../dto/saveStory.dto';
 
 @Controller('story')
 export class StoryController {
@@ -21,10 +22,6 @@ export class StoryController {
 
   constructor(private readonly storyService: StoryService) {}
 
-  @Get()
-  async hello() {
-    return 'Hello from story controller';
-  }
 
   @Get('search')
   async searchStories(@Query('query') query: string) {
@@ -41,6 +38,12 @@ export class StoryController {
   ): Promise<UploadDto> {
     this.logger.log(`Creating a new story`);
     return this.storyService.createStory(createStoryDto);
+  }
+
+  @Post('save')
+  async saveStory(@Body() saveStoryDto: SaveStoryDto): Promise<StoryDto> {
+    this.logger.log(`Saving a story`);
+    return this.storyService.saveStory(saveStoryDto);
   }
 
   @Get('')

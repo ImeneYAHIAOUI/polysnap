@@ -1,5 +1,4 @@
-export class StoryDto {
-  id: number;
+export class SaveStoryDto {
   title: string;
   userId: number;
   filename: string;

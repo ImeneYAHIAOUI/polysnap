@@ -9,6 +9,7 @@ import { UploadDto } from '../dto/upload.dto';
 import { Cron } from '@nestjs/schedule';
 import { DownloadDto } from '../dto/Download.dto';
 import { UsersProxyService } from './users-service-proxy/user-service-proxy.service';
+import { SaveStoryDto } from '../dto/saveStory.dto';
 
 @Injectable()
 export class StoryService {
@@ -55,29 +56,8 @@ export class StoryService {
     this.logger.log(`Searching for stories with query ${query}`);
     return this.storiesRepository.find({
       where: [{ title: Like(`%${query}%`) }],
-      select: ['id', 'title', 'userId', 'filename', 'format', 'views'],
+      select: ['id', 'title', 'userId', 'filename', 'format'],
     });
-  }
-
-  async createStory(createStoryDto: CreateStoryDto): Promise<UploadDto> {
-    this.logger.log(`Creating story ${JSON.stringify(createStoryDto)}`);
-
-    const url = await this.storageService.generate(createStoryDto.filename);
-    const newStory = this.storiesRepository.create({
-      title: createStoryDto.title,
-      userId: createStoryDto.userId,
-      filename: createStoryDto.filename,
-      format: createStoryDto.format,
-      views: 0, // Assuming you initialize views to 0
-    });
-    const expirationDate = new Date();
-    expirationDate.setHours(expirationDate.getHours() + 24);
-    newStory.expirationTime = expirationDate;
-    const createdStory = await this.storiesRepository.save(newStory);
-    return {
-      uploadUrl: url,
-      story: createdStory,
-    };
   }
 
   async getAllStories(userId: number): Promise<StoryDto[] | []> {
@@ -89,7 +69,6 @@ export class StoryService {
         'userId',
         'filename',
         'format',
-        'views',
         'creationTime',
         'expirationTime',
       ],
@@ -147,5 +126,27 @@ export class StoryService {
     }
 
     return storiesDownload;
+  }
+
+  async saveStory(saveStoryDto: SaveStoryDto) {
+    const newStory = this.storiesRepository.create({
+      title: saveStoryDto.title,
+      userId: saveStoryDto.userId,
+      filename: saveStoryDto.filename,
+      format: saveStoryDto.format,
+    });
+    const expirationDate = new Date();
+    expirationDate.setHours(expirationDate.getHours() + 24);
+    newStory.expirationTime = expirationDate;
+    const createdStory = await this.storiesRepository.save(newStory);
+    return createdStory;
+  }
+
+  async createStory(createStoryDto: CreateStoryDto): Promise<UploadDto> {
+    this.logger.log(`Creating story ${JSON.stringify(createStoryDto)}`);
+    const url = await this.storageService.generate(createStoryDto.filename);
+    return {
+      uploadUrl: url,
+    };
   }
 }
