@@ -17,7 +17,7 @@ export class StorageService {
         version: 'v4' as const,
         action: 'write' as const,
         expires: Date.now() + 15 * 60 * 1000,
-        contentType: 'application/octet-stream',
+        contentType: 'video/mp4',
       };
       const [url] = await this.storage
         .bucket(process.env.BUCKET_NAME)
