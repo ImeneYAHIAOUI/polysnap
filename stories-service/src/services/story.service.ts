@@ -147,7 +147,7 @@ export class StoryService {
 
   async createStory(createStoryDto: CreateStoryDto): Promise<UploadDto> {
     this.logger.log(`Creating story ${JSON.stringify(createStoryDto)}`);
-    const url = await this.storageService.generate(createStoryDto.filename);
+    const url = await this.storageService.generate(createStoryDto.filename, createStoryDto.filetype);
     return {
       uploadUrl: url,
     };
