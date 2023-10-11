@@ -42,11 +42,21 @@ export class StorageService {
     viewerId: number,
     publisherId: number,
   ): Promise<string> {
+    if (typeof viewerId !== 'number') {
+      viewerId = parseInt(viewerId as string);
+    }
+    if (typeof publisherId !== 'number') {
+      publisherId = parseInt(publisherId as string);
+    }
+
     this.logger.log(
       `Downloading story for user ${viewerId} from user ${publisherId}`,
     );
     const contacts = await this.usersProxyService.getContactOfUser(publisherId);
     this.logger.log(`Retrieved contacts for user ${publisherId}:`, contacts);
+    this.logger.log(
+      `Checking if user ${viewerId} is authorized to access file`,
+    );
     if (
       !contacts.some((contact) => contact.contactId === viewerId) &&
       publisherId !== viewerId
@@ -60,7 +70,7 @@ export class StorageService {
     if (!exists) {
       throw new FileNotFoundException(`Le fichier ${fileName} n'existe pas.`);
     }
-    return `https://storage.google.com/${process.env.BUCKET_NAME}/${fileName}`;
+    return `https://storage.googleapis.com/${process.env.BUCKET_NAME}/${fileName}`;
   }
   async delete(fileName: string): Promise<void> {
     try {
