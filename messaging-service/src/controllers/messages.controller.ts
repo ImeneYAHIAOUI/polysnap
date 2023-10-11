@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
 import { MessageDTO } from 'src/entities/message.entity';
@@ -14,4 +15,8 @@ export class MessageController {
       return 'Message published';
   }
 
+  @Get("redis")
+  async getAllElementsFromRedis() {
+    return await this.appService.getAllMessagesFromRedis();
+  }
 }
