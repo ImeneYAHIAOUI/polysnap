@@ -11,13 +11,13 @@ export class StorageService {
   constructor(private readonly usersProxyService: UsersProxyService) {
     this.storage = new Storage();
   }
-  async generate(fileName: string): Promise<string> {
+  async generate(fileName: string, filetype: string): Promise<string> {
     try {
       const options = {
         version: 'v4' as const,
         action: 'write' as const,
         expires: Date.now() + 15 * 60 * 1000,
-        contentType: 'video/mp4',
+        contentType: filetype,
       };
       const [url] = await this.storage
         .bucket(process.env.BUCKET_NAME)

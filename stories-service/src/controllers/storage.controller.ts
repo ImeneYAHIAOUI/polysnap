@@ -9,12 +9,12 @@ export class StorageController {
 
   constructor(private readonly storageService: StorageService) {}
   @Get('uploadUrl')
-  async getUploadUrl(@Query('fileName') fileName: string): Promise<string> {
+  async getUploadUrl(@Query('fileName') fileName: string, @Query('filetype') filetype: string): Promise<string> {
     try {
       this.logger.log(
         `Attempting to generate upload URL for file: ${fileName}`,
       );
-      const url = await this.storageService.generate(fileName);
+      const url = await this.storageService.generate(fileName,filetype);
       this.logger.log(
         `Successfully generated upload URL for file: ${fileName}`,
         url,
