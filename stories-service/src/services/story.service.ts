@@ -76,6 +76,7 @@ export class StoryService {
 
   async getAllStoriesForContact(userId: number): Promise<DownloadDto[] | []> {
     const contactList = await this.usersProxyService.getContactOfUser(userId);
+    console.log(contactList);
     const currentDateTime = new Date();
     currentDateTime.setMilliseconds(0);
     const storyList = await this.storiesRepository.find({
@@ -98,23 +99,22 @@ export class StoryService {
         storiesDownload.push(download);
       } catch (UnauthorizedException) {}
     }
-
     for (const contact of contactList) {
       const stories = await this.storiesRepository.find({
         where: [
           {
-            userId: contact.id,
+            userId: contact.contactId,
             expirationTime: MoreThanOrEqual(currentDateTime),
           },
         ],
       });
+      console.log(stories);
       for (const story of stories) {
-        console.log(story.expirationTime, currentDateTime);
         try {
           const url = await this.storageService.download(
             story.filename,
             userId,
-            contact.id,
+            contact.contactId,
           );
           const download: DownloadDto = {
             downloadUrl: url,
@@ -123,9 +123,8 @@ export class StoryService {
           storiesDownload.push(download);
         } catch (UnauthorizedException) {}
       }
-
-      return storiesDownload;
     }
+    return storiesDownload;
   }
 
   async saveStory(saveStoryDto: SaveStoryDto) {
