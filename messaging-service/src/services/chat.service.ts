@@ -5,6 +5,25 @@ import { Chat } from 'src/entities/chat.entity';
 
 @Injectable()
 export class ChatService {
+
+  async findAllChatsByUser(id: number): Promise<Chat[]> {
+    console.log(id);
+    const chats = await this.findAllChats();
+  
+    const chatsForUser = chats.filter((chat) => {
+      console.log(`Checking chat ID ${chat.id}, Participants: ${chat.participants}`);
+      for (let i = 0; i < chat.participants.length; i++) {
+        console.log("participant id " + chat.participants[i]);
+        if (chat.participants[i] == id) {
+          return true;
+        }
+      }
+      return false;
+    });
+  
+    return chatsForUser;
+  }
+  
   constructor(@InjectRepository(Chat) private chatRepository: Repository<Chat>) {}
 
   async findChatByName(name: string): Promise<Boolean> {
@@ -34,14 +53,25 @@ export class ChatService {
 
   async findChatById(id: number): Promise<Chat> {
     const chat = await this.chatRepository.findOne({ where: { id: id } });
+    console.log(chat);
     if (!chat) {
       throw new NotFoundException(`Chat with ID ${id} not found`);
     }
     return chat;
   }
 
+  async checkChatExists(id : number): Promise<boolean>{
+    const chat = await this.chatRepository.findOne({ where: { id: id } });
+    console.log(chat);
+    if (!chat) {
+      return false;
+    }
+    return true;
+  }
+
   async deleteChatById(id: number): Promise<void> {
     const chat = await this.chatRepository.findOne({ where: { id: id } });
+    console.log(chat);
     if (!chat) {
       throw new NotFoundException(`Chat with ID ${id} not found`);
     }

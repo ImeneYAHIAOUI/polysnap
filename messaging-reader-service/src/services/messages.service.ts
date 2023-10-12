@@ -2,19 +2,26 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { addMinutes } from 'date-fns';
 import { Message } from 'src/entities/message.entity';
-import { Connection, Repository } from 'typeorm';
+import { User } from 'src/entities/user.entity';
+import { Repository } from 'typeorm';
 
 
 @Injectable()
 export class MessageService {
   private readonly messageRepository: Repository<Message>;
 
-  constructor(@InjectRepository(Message) messageRepository: Repository<Message>, private connection: Connection) {
+  constructor(@InjectRepository(Message) messageRepository: Repository<Message>,
+  @InjectRepository(User) userRepository: Repository<User>,
+  ) {
     this.messageRepository = messageRepository;
   }
 
   async findAll(): Promise<Message[]> {
-    return this.messageRepository.find();
+    return this.messageRepository.find({
+      order: {
+        date: 'ASC'
+      }
+    });
   }
 
   async getUnreadMessages(chatId: number, userId: number): Promise<any[]> {
@@ -23,16 +30,12 @@ export class MessageService {
     let entities = await this.findAll();
   
     const unreadMessages = entities.filter((entity) => {
-      console.log(!entity.seenBy.includes(userId) && entity.chatId == chatId)
       if (!entity.seenBy.includes(userId) && entity.chatId == chatId) {
-        console.log("entity");
-        console.log(entity.chatId);
         if (entity.expirationTime != null && entity.expirationTime != 0) {
           if (addMinutes( entity.date, entity.expirationTime) > new Date()) {
             return true;
           }
         } else {
-          console.log("ok")
           return true;
         }
       }
@@ -45,7 +48,7 @@ export class MessageService {
       console.log("messages " + message.toString());
       await this.updateMessage(message, userId);
     }
-    console.log("ENDDD" + unreadMessages.length)
+    console.log("ENDDD")
   
     return unreadMessages;
   }
@@ -75,7 +78,6 @@ export class MessageService {
   }
 
   
- 
   async getAllMessagesByNumbers(chatId: number, userId: number, n: number): Promise<any[]> {
     console.log("getting all messages begin from date");
   
@@ -103,7 +105,6 @@ export class MessageService {
   async updateMessage(message: any, userId: number): Promise<void> {
     console.log("getting unread message begin updating");
   
-    // Ensure that seenBy is an array
     if (!message.seenBy) {
       message.seenBy = [];
     }
@@ -117,7 +118,6 @@ export class MessageService {
   
 
   async deleteMessage(messageId: number): Promise<void> {
-    // Find the message by its ID using the TypeORM repository
     const messageToDelete = await this.messageRepository.findOne({where: {id: messageId}});
   
     if (!messageToDelete) {

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Delete, Query } from '@nestjs/common';
 import { ChatService } from 'src/services/chat.service';
 import { Chat } from 'src/entities/chat.entity';
 
@@ -7,8 +7,8 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Get()
-  async findAllChats(): Promise<Chat[]> {
-    return this.chatService.findAllChats();
+  async findAllChats(@Query('userId') id: number): Promise<Chat[]> {
+    return this.chatService.findAllChatsByUser(id);
   }
 
   @Get(':id')
@@ -30,5 +30,7 @@ export class ChatController {
   async deleteChatById(@Param('id') id: number): Promise<void> {
     await this.chatService.deleteChatById(id);
   }
+
+  
 
 }

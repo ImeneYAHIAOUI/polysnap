@@ -7,11 +7,12 @@ import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Message } from './entities/message.entity';
 import { Chat } from './entities/chat.entity';
+import { User } from './entities/user.entity';
 
 @Module({
   imports: [
     HttpModule,
-    TypeOrmModule.forFeature([Message, Chat]),
+    TypeOrmModule.forFeature([Message, Chat, User]),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: '/cloudsql/cloud-398911:us-central1:polysnap',

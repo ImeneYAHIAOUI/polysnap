@@ -3,17 +3,20 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PubSub } from '@google-cloud/pubsub';
 import Redis from 'ioredis';
 import { MessageDTO } from 'src/entities/message.entity';
+import { ChatService } from './chat.service';
+import { UserProxyService } from './user.proxy.service';
 
 
 @Injectable()
 export class MessageService {
   private pubsub: PubSub;
   private redisClient: Redis;
-  chatService: any;
+  
   
 
 
-  constructor() {
+  constructor(private  chatService: ChatService,
+    private  userService : UserProxyService) {
     this.pubsub = new PubSub({
     });
 
@@ -61,11 +64,48 @@ async getAllMessagesFromRedis(): Promise<MessageDTO[]> {
   }
 }
 
+async test1000Messages() {
+  for (let i = 0; i < 1000; i++) {
+    const message: MessageDTO = {
 
-  
+      chatId: 1,
+
+      senderId: 1,
+    
+      content: "hello "+ i,
+    
+      attachment: {
+        type: "test",
+        name: "test",
+        link: "test",
+      },
+    
+      expiring: false,
+    
+      expirationTime: 0,
+    
+      date: new Date()
+    
+    };
+
+    // Publish the generated message
+    await this.publishMessage(message);
+  }
+}
+
 
   async publishMessage(message: MessageDTO): Promise<void> {
-    try {
+        console.log(message.chatId);
+        console.log(message.senderId);
+
+      const bool = await this.chatService.checkChatExists(message.chatId);
+      if(!bool){
+        throw new NotFoundException("chat not found exception");
+      }
+      const bool2 = await this.userService.findById(message.senderId);
+      if(!bool2){
+        throw new NotFoundException("user not found exception");
+      }
       const topicName = 'projects/cloud-398911/topics/message_queue';
       
       const timestamp = new Date().getTime(); 
@@ -82,9 +122,6 @@ async getAllMessagesFromRedis(): Promise<MessageDTO[]> {
 
       console.log(`Message ${messageId} published.`);
       console.log('Message published successfully.');
-    } catch (error) {
-      console.error('Error publishing message:', error);
-    }
   }
 
 }

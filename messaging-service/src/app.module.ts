@@ -6,10 +6,12 @@ import { ChatService } from './services/chat.service';
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
+import { User } from './entities/user.entity';
+import { UserProxyService } from './services/user.proxy.service';
 
 @Module({
   imports: [ HttpModule,
-    TypeOrmModule.forFeature([Chat]),
+    TypeOrmModule.forFeature([Chat, User]),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: '/cloudsql/cloud-398911:us-central1:polysnap',
@@ -20,7 +22,7 @@ import { Chat } from './entities/chat.entity';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),],
-  providers: [MessageService, ChatService],
+  providers: [MessageService, ChatService, UserProxyService],
   controllers: [MessageController, ChatController], // Include your service here
 })
 export class AppModule {}

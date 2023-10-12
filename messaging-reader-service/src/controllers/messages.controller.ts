@@ -14,7 +14,7 @@ export class MessageController {
     return this.messageService.getUnreadMessages(chatId, userId);
   }
 
-  @Get()
+  @Get('all')
   async get(
   ): Promise<any[]> {
     return this.messageService.findAll();
@@ -24,20 +24,18 @@ export class MessageController {
   async getAllMessagesFromDate(
     @Query('chatId') chatId: number,
     @Query('userId') userId: number,
-    @Query('date') date: number,
+    @Query('date') date: string,
   ): Promise<any[]> {
     return this.messageService.getAllMessagesFromDate(chatId, userId, new Date(date));
   }
 
-  @Get('/:userId')
+  @Get()
   async getAllMessages(
     @Query('chatId') chatId: number,
     @Query('number') number: number,
-    @Param('userId') userId: number,
+    @Query('userId') userId: number,
   ): Promise<any[]> {
     return this.messageService.getAllMessagesByNumbers(chatId, userId, number);
   }
-
-
 
 }

@@ -19,4 +19,9 @@ export class MessageController {
   async getAllElementsFromRedis() {
     return await this.appService.getAllMessagesFromRedis();
   }
+
+  @Post('test')
+  async test(): Promise<void> {
+    this.appService.test1000Messages();
+  }
 }
