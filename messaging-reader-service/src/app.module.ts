@@ -3,9 +3,26 @@ import { MessageController } from './controllers/messages.controller';
 import { MessageService } from './services/messages.service';
 import { MessagesCleanUpService } from './services/messagesCleanUp.service';
 import { MessageCleanupController } from './controllers/messagesCleanUp.controller';
+import { HttpModule } from '@nestjs/axios';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Message } from './entities/message.entity';
+import { Chat } from './entities/chat.entity';
 
 @Module({
-  imports: [],
+  imports: [
+    HttpModule,
+    TypeOrmModule.forFeature([Message, Chat]),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: '/cloudsql/cloud-398911:us-central1:polysnap',
+      port: 5432,
+      username: 'user',
+      password: 'storypassword',
+      database: 'message',
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true,
+      }),
+  ],
   controllers: [MessageController, MessageCleanupController],
   providers: [MessageService, MessagesCleanUpService],
 })

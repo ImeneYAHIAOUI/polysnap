@@ -1,53 +1,50 @@
-import { PubSub } from '@google-cloud/pubsub';
-import { Injectable } from '@nestjs/common';
-import { Datastore } from '@google-cloud/datastore';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Chat } from 'src/entities/chat.entity';
-
 
 @Injectable()
 export class ChatService {
+  constructor(@InjectRepository(Chat) private chatRepository: Repository<Chat>) {}
 
-  private pubsub: PubSub;
-  private readonly datastore: Datastore;
-
-  constructor() {
-    this.pubsub = new PubSub();
-    this.datastore = new Datastore();
+  async findChatByName(name: string): Promise<Boolean> {
+    const chat = await this.chatRepository.findOne({ where: { name: name } });
+    if (!chat) {
+      return false;
+    }
+    return true;
   }
 
-  async createChat(name: string, participants: string[]): Promise<void> {
-   // check if particiapnts are in db
-    const chatEntity = {
-      key: this.datastore.key('chat'), 
-      data: {
-        name : name,
-        participants : participants,
-      },
-    };
-    await this.datastore.save(chatEntity);
-
-
+  async addChat(chatData: Chat): Promise<Chat> {
+    const chatExists = await this.findChatByName(chatData.name);
+    if (chatExists) {
+      return null;
+    }
+    const newChat = this.chatRepository.create(chatData);
+    return this.chatRepository.save(newChat);
   }
 
-  async getChatForUser(idUser: string): Promise<Chat[]> {
-    const chatEntities = await this.getChats();
-    const chatEntitiesResult = chatEntities.filter((entity) =>
-      entity.participants.includes(idUser)
-    );
-    return chatEntitiesResult;
+  async findAllChats(): Promise<Chat[]> {
+    return this.chatRepository.find();
   }
 
-  
-  async getChats(): Promise<Chat[]> {
-    const chatsQuery = this.datastore.createQuery('chat');
-    const [chatEntities] = await this.datastore.runQuery(chatsQuery);
-    const chats = chatEntities.map((entity) => ({
-      id: entity.id,
-      name: entity.name,
-      participants: entity.participants,
-    }));
-    return chats;
+  async deleteAllChats(): Promise<void> {
+    await this.chatRepository.delete({}); // Deletes all chat entities
   }
 
+  async findChatById(id: number): Promise<Chat> {
+    const chat = await this.chatRepository.findOne({ where: { id: id } });
+    if (!chat) {
+      throw new NotFoundException(`Chat with ID ${id} not found`);
+    }
+    return chat;
+  }
 
+  async deleteChatById(id: number): Promise<void> {
+    const chat = await this.chatRepository.findOne({ where: { id: id } });
+    if (!chat) {
+      throw new NotFoundException(`Chat with ID ${id} not found`);
+    }
+    await this.chatRepository.remove(chat);
+  }
 }

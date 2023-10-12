@@ -12,12 +12,26 @@ const messages_controller_1 = require("./controllers/messages.controller");
 const chats_controller_1 = require("./controllers/chats.controller");
 const messages_service_1 = require("./services/messages.service");
 const chat_service_1 = require("./services/chat.service");
+const axios_1 = require("@nestjs/axios");
+const typeorm_1 = require("@nestjs/typeorm");
+const chat_entity_1 = require("./entities/chat.entity");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [],
+        imports: [axios_1.HttpModule,
+            typeorm_1.TypeOrmModule.forFeature([chat_entity_1.Chat]),
+            typeorm_1.TypeOrmModule.forRoot({
+                type: 'postgres',
+                host: '/cloudsql/cloud-398911:us-central1:polysnap',
+                port: 5432,
+                username: 'user',
+                password: 'storypassword',
+                database: 'messages',
+                entities: [__dirname + '/**/*.entity{.ts,.js}'],
+                synchronize: true,
+            }),],
         providers: [messages_service_1.MessageService, chat_service_1.ChatService],
         controllers: [messages_controller_1.MessageController, chats_controller_1.ChatController],
     })

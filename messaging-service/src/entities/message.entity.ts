@@ -25,5 +25,4 @@ export class MessageDTO {
   date: Date;
 
 
-
 }

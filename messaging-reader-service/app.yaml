@@ -2,3 +2,5 @@ runtime: nodejs18
 service: messagereader
 env_variables:
   NODE_ENV: production
+includes:
+  - credentials.yaml

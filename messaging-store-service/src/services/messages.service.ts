@@ -1,26 +1,31 @@
 /* eslint-disable prettier/prettier */
 import { PubSub } from '@google-cloud/pubsub';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Datastore } from '@google-cloud/datastore';
 import { randomUUID } from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
-
-
-
+import { Message } from 'src/entities/message.save.entity';
+import { ChatService } from './chats.service';
 
 @Injectable()
 export class MessageService {
 
   private pubsub: PubSub;
-  private readonly datastore: Datastore;
 
 
-  constructor( @InjectRepository(User)
-  private usersRepository: Repository<User>) {
+  constructor( @InjectRepository(Message)
+  private messageRepository: Repository<Message>,private chatService: ChatService ) {
     this.pubsub = new PubSub();
-    this.datastore = new Datastore();
+  }
+
+  async addMessage(message : Message): Promise<Message> {
+    message.date = new Date();
+    const savedMessage = await this.messageRepository.save(message);
+    return savedMessage;
+  }
+
+  async getAllMessages(): Promise<Message[]> {
+    return this.messageRepository.find();
   }
 
   async subscribeToTopic(requestBody : any) {
@@ -30,29 +35,19 @@ export class MessageService {
     const data = requestBody.message.data;
     const decodedData = Buffer.from(data, 'base64').toString('utf-8');
     const messageData = JSON.parse(decodedData.toString());
-    await this.sendMessage(messageData);
+
+    const chatId = messageData.chatId;
+    const chatExists = await this.chatService.findChatById(chatId);
+  
+    if (!chatExists) {
+      throw new NotFoundException(`Chat with id ${chatId} not found`);
+    }
+  
+    const savedMessage = await this.messageRepository.save(messageData);
+    return savedMessage;
+
 }
 
-  async sendMessage(message) {
-    const bool = await this.checkIfChatExists(message.chatId);
-    if(!bool) return;
-    const chatEntity = {
-      key: this.datastore.key('messages'),
-      data: {
-        id: randomUUID(),
-        chatId: message.chatId,
-        sender: message.sender,
-        content: message.content,
-        attachment: message.attachment,
-        expiring: message.expiring,
-        seenBy: [],
-        date: Date.now(),
-        expirationTime: message.expirationTime
-      }
-    };
-    console.log('Sending message to the database');
-    await this.datastore.save(chatEntity);
-  }
 
   async checkIfUserExists(userId: number): Promise<boolean> {
 
@@ -67,49 +62,5 @@ export class MessageService {
   }
 
 
-
-  async checkIfChatExists(chatId: string): Promise<boolean> {
-    const chats = this.datastore.createQuery('chat')
-    const [chatEntities] = await this.datastore.runQuery(chats);
-    const chat = chatEntities.find((entity) => entity.name === chatId);
-    if (!chat) {
-      console.log(`Chat ${chatId} not found`);
-      return false;
-    }
-    return true;
-  }
-  
-  async updateMessage(message: any, userId: string): Promise<void> {
-    console.log("getting unread message begin updating")
-    if (!message.seenBy) {
-      message.seenBy = [];
-    }
-    if(!message.seenBy.includes(userId)) {
-        message.seenBy.push(userId);
-    }
-  
-    // Save the updated entity back to the datastore
-    await this.datastore.save({
-        key: message[this.datastore.KEY],
-      data: message,
-    });
-    console.log("getting unread message end updating")
-
-  }
-
-
-  async deleteMessage(messageId: string): Promise<void> {
-
-    const query = this.datastore.createQuery('messages');
-    const [entities] = await this.datastore.runQuery(query);
-    const messageToDelete = entities.find((entity) => entity.id === messageId);
-  
-    if (!messageToDelete) {
-      throw new NotFoundException(`Message ${messageId} not found`);
-    }
-  
-    await this.datastore.delete(messageToDelete[this.datastore.KEY]);
-
-  }
 
 }

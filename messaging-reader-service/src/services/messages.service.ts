@@ -1,168 +1,131 @@
-/* eslint-disable prettier/prettier */
-import { PubSub } from '@google-cloud/pubsub';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Datastore } from '@google-cloud/datastore';
-import { randomUUID } from 'crypto';
+import { InjectRepository } from '@nestjs/typeorm';
 import { addMinutes } from 'date-fns';
+import { Message } from 'src/entities/message.entity';
+import { Connection, Repository } from 'typeorm';
 
 
 @Injectable()
 export class MessageService {
-  getAllMessages(chatName: string, userId: string, number: string): any[] | PromiseLike<any[]> {
-    throw new Error('Method not implemented.');
+  private readonly messageRepository: Repository<Message>;
+
+  constructor(@InjectRepository(Message) messageRepository: Repository<Message>, private connection: Connection) {
+    this.messageRepository = messageRepository;
   }
 
-  private pubsub: PubSub;
-  private readonly datastore: Datastore;
-
-
-  constructor() {
-    this.pubsub = new PubSub();
-    this.datastore = new Datastore();
+  async findAll(): Promise<Message[]> {
+    return this.messageRepository.find();
   }
 
-  async checkIfChatExists(chatId: string): Promise<boolean> {
-    const chats = this.datastore.createQuery('chat')
-    const [chatEntities] = await this.datastore.runQuery(chats);
-    const chat = chatEntities.find((entity) => entity.name === chatId);
-    if (!chat) {
-      throw new NotFoundException(`Chat ${chatId} not found`);
-    }
-    return true;
-  }
+  async getUnreadMessages(chatId: number, userId: number): Promise<any[]> {
+    console.log("getting unread message begin");
 
-  async getMessages() {
-    const messages = this.datastore.createQuery('messages');
-    const [messageEntities] = await this.datastore.runQuery(messages);
-    return messageEntities;
-}
-
-  async getUnreadMessages(chatId: string, userId: string): Promise<any[]> {
-
-    const chat = this.checkIfChatExists(chatId);
-
-    if (!chat) {
-        throw new NotFoundException(`Chat ${chatId} not found`);
-    }
-
-    console.log("getting unread message begin")
-
-    const query = this.datastore
-    .createQuery('messages');
-
-  const [entities] = await this.datastore.runQuery(query);
+    let entities = await this.findAll();
+  
     const unreadMessages = entities.filter((entity) => {
-      if (!entity.seenBy.includes(userId) && entity.chatId === chatId) {
-        
-        if (entity.timeToExpire != null && entity.timeToExpire !== 0) {
+      console.log(!entity.seenBy.includes(userId) && entity.chatId == chatId)
+      if (!entity.seenBy.includes(userId) && entity.chatId == chatId) {
+        console.log("entity");
+        console.log(entity.chatId);
+        if (entity.expirationTime != null && entity.expirationTime != 0) {
           if (addMinutes( entity.date, entity.expirationTime) > new Date()) {
             return true;
           }
         } else {
+          console.log("ok")
           return true;
         }
       }
       return false;
     });
     
-    console.log("getting unread message end filtering")
+    console.log("getting unread message end filtering" + unreadMessages.length)
 
     for (const message of unreadMessages) {
-        console.log("messages "+ message.toString())
+      console.log("messages " + message.toString());
       await this.updateMessage(message, userId);
     }
+    console.log("ENDDD" + unreadMessages.length)
+  
     return unreadMessages;
   }
 
-  async getAllMessagesFromDate(chatId: string, userId: string, specificDate : Date): Promise<any[]> {
+  async getAllMessagesFromDate(chatId: number, userId: number, specificDate: Date): Promise<any[]> {
+  
+    console.log("getting all messages begin from date " + specificDate);
 
-    const chat = this.checkIfChatExists(chatId);
+    let entities = await this.findAll();
+    
+    const filteredMessages = entities.filter(entity => new Date(entity.date) >= specificDate
+    && entity.chatId == chatId && (
+      (!entity.expiring || !entity.seenBy.includes(userId) ) ||
+       (( entity.expirationTime != null || entity.expirationTime != 0) && 
+        addMinutes(entity.date, entity.expirationTime) > new Date()) ) );
+  
+      console.log("getting unread message end filtering")
 
-    if (!chat) {
-      throw new NotFoundException(`Chat ${chatId} not found`);
-    }
-
-    console.log("getting all messages begin from date "+ specificDate)
-    const query = this.datastore
-    .createQuery('messages');
-
-  const [entities] = await this.datastore.runQuery(query);
-    const filteredMessages = entities.filter(entity => new Date(entity.date) >= specificDate && (
-    (!entity.expiring || !entity.seenBy.includes(userId) ) ||
-     (( entity.expirationTime != null || entity.expirationTime != 0) && 
-      addMinutes(entity.date, entity.expirationTime) > new Date()) ) );
-
-    console.log("getting unread message end filtering")
-
+    console.log("getting all messages end filtering");
+  
     for (const message of filteredMessages) {
-        console.log("messages "+ message.toString())
+      console.log("messages " + message.toString());
       await this.updateMessage(message, userId);
     }
+  
     return filteredMessages;
   }
+
+  
  
-  async getAllMessagesByNumbers(chatId: string, userId: string, n: number) : Promise<any[]> {
-    const chat = this.checkIfChatExists(chatId);
+  async getAllMessagesByNumbers(chatId: number, userId: number, n: number): Promise<any[]> {
+    console.log("getting all messages begin from date");
+  
+    let entities = await this.findAll();
 
-    if (!chat) {
-        throw new NotFoundException(`Chat ${chatId} not found`);
-    }
+    const filteredMessages = entities.filter(entity => ( entity.chatId == chatId && (
+      (!entity.expiring || !entity.seenBy.includes(userId)) ||
+      ((entity.expirationTime != null || entity.expirationTime != 0) &&
+          addMinutes(entity.date, entity.expirationTime) > new Date()))
+  ));
 
-    console.log("getting all messages begin from date ");
-
-    const query = this.datastore
-        .createQuery('messages');
-
-    const [entities] = await this.datastore.runQuery(query);
-    const filteredMessages = entities.filter(entity => (
-        (!entity.expiring || !entity.seenBy.includes(userId)) ||
-        ((entity.expirationTime != null || entity.expirationTime != 0) &&
-            addMinutes(entity.date, entity.expirationTime) > new Date())
-    ));
-
-    const firstMessages = filteredMessages.slice(0, n);
-
-    console.log("getting unread message end filtering");
-
+  const firstMessages = filteredMessages.slice(0, n);
+  
+    console.log("getting all messages end filtering");
+  
     for (const message of firstMessages) {
-        console.log("messages " + message.toString());
-        await this.updateMessage(message, userId);
+      console.log("messages " + message.toString());
+      await this.updateMessage(message, userId);
     }
+  
     return firstMessages;
-}
+  }
+  
 
-  async updateMessage(message: any, userId: string): Promise<void> {
-    console.log("getting unread message begin updating")
-    // Update the entity to mark it as seen by the user
+  async updateMessage(message: any, userId: number): Promise<void> {
+    console.log("getting unread message begin updating");
+  
+    // Ensure that seenBy is an array
     if (!message.seenBy) {
       message.seenBy = [];
     }
-    if(!message.seenBy.includes(userId)) {
-        message.seenBy.push(userId);
+      if (!message.seenBy.includes(userId)) {
+      message.seenBy.push(userId);
     }
+      await this.messageRepository.save(message);
   
-    // Save the updated entity back to the datastore
-    await this.datastore.save({
-        key: message[this.datastore.KEY],
-      data: message,
-    });
-    console.log("getting unread message end updating")
-
+    console.log("getting unread message end updating");
   }
+  
 
-
-  async deleteMessage(messageId: string): Promise<void> {
-
-    const query = this.datastore.createQuery('messages');
-    const [entities] = await this.datastore.runQuery(query);
-    const messageToDelete = entities.find((entity) => entity.id === messageId);
+  async deleteMessage(messageId: number): Promise<void> {
+    // Find the message by its ID using the TypeORM repository
+    const messageToDelete = await this.messageRepository.findOne({where: {id: messageId}});
   
     if (!messageToDelete) {
       throw new NotFoundException(`Message ${messageId} not found`);
     }
   
-    await this.datastore.delete(messageToDelete[this.datastore.KEY]);
-
+    await this.messageRepository.remove(messageToDelete);
   }
+  
 
 }

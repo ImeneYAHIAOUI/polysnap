@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PubSub } from '@google-cloud/pubsub';
 import Redis from 'ioredis';
 import { MessageDTO } from 'src/entities/message.entity';
@@ -9,6 +9,7 @@ import { MessageDTO } from 'src/entities/message.entity';
 export class MessageService {
   private pubsub: PubSub;
   private redisClient: Redis;
+  chatService: any;
   
 
 
@@ -67,10 +68,8 @@ async getAllMessagesFromRedis(): Promise<MessageDTO[]> {
     try {
       const topicName = 'projects/cloud-398911/topics/message_queue';
       
-
       const timestamp = new Date().getTime(); 
       const random = Math.random().toString(36).substring(2, 10); 
-    
 
       const uniqueKey = `${timestamp}-${random}`;
       await this.redisClient.set(uniqueKey, JSON.stringify(message));

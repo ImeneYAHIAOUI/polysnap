@@ -6,30 +6,36 @@ import { MessageService } from 'src/services/messages.service';
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
-  @Get('unread/:userId')
+  @Get('unread')
   async getUnreadMessages(
-    @Query('chatName') chatId: string,
-    @Param('userId') userId: string,
+    @Query('chatId') chatId: number,
+    @Query('userId') userId: number,
   ): Promise<any[]> {
     return this.messageService.getUnreadMessages(chatId, userId);
   }
 
-  @Get('from-date/:userId')
-  async getAllMessagesFromDate(
-    @Query('chatName') chatName: string,
-    @Param('userId') userId: string,
-    @Query('date') date: string,
+  @Get()
+  async get(
   ): Promise<any[]> {
-    return this.messageService.getAllMessagesFromDate(chatName, userId, new Date(date));
+    return this.messageService.findAll();
+  }
+
+  @Get('from-date')
+  async getAllMessagesFromDate(
+    @Query('chatId') chatId: number,
+    @Query('userId') userId: number,
+    @Query('date') date: number,
+  ): Promise<any[]> {
+    return this.messageService.getAllMessagesFromDate(chatId, userId, new Date(date));
   }
 
   @Get('/:userId')
   async getAllMessages(
-    @Query('chatName') chatName: string,
+    @Query('chatId') chatId: number,
     @Query('number') number: number,
-    @Param('userId') userId: string,
+    @Param('userId') userId: number,
   ): Promise<any[]> {
-    return this.messageService.getAllMessagesByNumbers(chatName, userId, number);
+    return this.messageService.getAllMessagesByNumbers(chatId, userId, number);
   }
 
 
