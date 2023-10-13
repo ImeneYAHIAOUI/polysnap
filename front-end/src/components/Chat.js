@@ -39,7 +39,7 @@ const Chat = () => {
           return (
           <>
           {/* <Avatar>message.id</Avatar> */}
-          <Message key={message.id} message={message} />
+          <Message key={message.id*message.id} message={message} />
           </> )
         })}
       </Box>

@@ -42,7 +42,7 @@ export default function SignUp() {
       firstName: data.get('firstName'),
       lastName: data.get('lastName'),
       email: data.get('email')
-    }) && history.push('/');
+    }).then((res) => res && history.replace('/'));
   };
 
   if(localStorage.getItem('user') !== null){

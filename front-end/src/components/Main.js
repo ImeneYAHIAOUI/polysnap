@@ -9,7 +9,7 @@ import StoriesList from './StoriesList';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 import { useEffect, useState, Fragment } from 'react';
 
-import { login } from '../utils/api';
+import { addContact, login } from '../utils/api';
 import toast, { Toaster } from 'react-hot-toast';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -20,15 +20,12 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export default function Main(){
+export default function Main({}){
     const localStorage = window.localStorage;
     const history = useHistory();
     const [user, setUser] = useState({});
     const [chats, setChats] = useState([]);
     const [currentChat, setCurrentChat] = useState({});
-    const [stories, setStories] = useState([{
-        username: 'Imene'
-    }]);
 
     useEffect(() => {
         if(localStorage.getItem('user') === null){
@@ -38,15 +35,6 @@ export default function Main(){
             setUser(login(`username=${localStorage.getItem('user')}`,true));
         }
     }, []);
-
-    const handleAddContact = () => {
-        console.log('Add Contact');
-    }
-
-    const handleSendMessage = () => {
-        console.log('Send Message');
-    }
-      
 
     return(
         <>
@@ -64,7 +52,7 @@ export default function Main(){
                     </Grid>
                     <Grid item style={{ height: '5%'}}>
                         <Item style={{ height: '100%'}} xs={12} >
-                            <AddContact handleAddContact={handleAddContact} handleSendMessage={handleSendMessage}/>
+                            <AddContact />
                         </Item>
                     </Grid>
                 </Grid>
@@ -75,7 +63,7 @@ export default function Main(){
                 </Grid>
                 <Grid item xs={1} >
                     <Item style={{ height: '100%'}} >
-                        <StoriesList stories={stories} />
+                        <StoriesList />
                     </Item>
                 </Grid>
             </Grid>
