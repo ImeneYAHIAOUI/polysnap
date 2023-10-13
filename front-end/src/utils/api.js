@@ -3,6 +3,8 @@ import toast from "react-hot-toast";
 
 const USER_SERVICE_URL = process.env.REACT_APP_USER_SERVICE_URL;
 const STORY_SERVICE_URL = process.env.REACT_APP_STORY_SERVICE_URL;
+const CHAT_SERVICE_URL = process.env.REACT_APP_CHATS_SERVICE_URL;
+const MESSAGES_SERVICE_URL = process.env.REACT_APP_MESSAGES_SERVICE_URL;
 
 axios.defaults.headers["Access-Control-Allow-Origin"] = "*";
 axios.defaults.headers["Access-Control-Allow-Headers"] =
@@ -115,3 +117,43 @@ export const uploadStory = async (url, type, file) => {
     return null;
   }
 };
+
+export const getUserChats = async (userId) => {
+  try{
+    const res = await axios.get(`${CHAT_SERVICE_URL}/chats?userId=${userId}`, config);
+    return res.data;
+  }catch(err){
+    toast.error(`Getting chats unsuccessful: ${err.message}`);
+    return null;
+  }
+}
+
+export const createChat = async (data) => {
+  try{
+    const res = await axios.post(`${CHAT_SERVICE_URL}/chats`, data, config);
+    return res.data;
+  }catch(err){
+    toast.error(`Creating chat unsuccessful: ${err.message}`);
+    return null;
+  }
+}
+
+export const getLastNMessages = async (chatId,userId, number) => {
+  try{
+    const res = await axios.get(`${MESSAGES_SERVICE_URL}?chatId=${chatId}&userId=${userId}&number=${number}`, config);
+    return res.data;
+  }catch(err){
+    toast.error(`Getting messages unsuccessful: ${err.message}`);
+    return null;
+  }
+}
+
+export const sendMessage = async (data) => {
+  try{
+    const res = await axios.post(`${CHAT_SERVICE_URL}/messages`, data, config);
+    return res.data;
+  }catch(err){
+    toast.error(`Sending message unsuccessful: ${err.message}`);
+    return null;
+  }
+}

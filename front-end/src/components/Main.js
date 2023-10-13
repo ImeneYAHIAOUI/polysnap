@@ -24,8 +24,7 @@ export default function Main({}){
     const localStorage = window.localStorage;
     const history = useHistory();
     const [user, setUser] = useState({});
-    const [chats, setChats] = useState([]);
-    const [currentChat, setCurrentChat] = useState({});
+    const [currentChat, setCurrentChat] = useState(undefined);
 
     useEffect(() => {
         if(localStorage.getItem('user') === null){
@@ -47,7 +46,7 @@ export default function Main({}){
                     </Grid>
                     <Grid item style={{ height: '85%'}}>
                         <Item style={{ height: '100%'}} xs={12} >
-                            <ChatList chats={chats} />
+                            <ChatList setCurrentChat={setCurrentChat} />
                         </Item>
                     </Grid>
                     <Grid item style={{ height: '5%'}}>

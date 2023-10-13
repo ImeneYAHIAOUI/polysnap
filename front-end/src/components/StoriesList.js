@@ -62,7 +62,7 @@ const styleUpload = {
     p: 1,
   };
 
-  const styleStory = {
+const styleStory = {
     position: 'absolute',
     top: '50%',
     left: '50%',
@@ -72,7 +72,7 @@ const styleUpload = {
     border: '1px solid grey',
     boxShadow: 24,
     p: 1,
-  };
+};
 
 function LinearProgressWithLabel(props) {
     return (
