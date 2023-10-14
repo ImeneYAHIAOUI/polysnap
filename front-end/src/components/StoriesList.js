@@ -263,7 +263,7 @@ export default function StoriesList() {
 
 
         <div className={classes.thinScrollbar}>
-            <Box style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
+            <Box style={{display:"flex", justifyContent:"center", alignItems:"center", overflow: "hidden", whiteSpace:"pre-wrap"}}>
                 <Typography variant="h6" style={{paddingLeft:"10px"}}>Stories &nbsp;</Typography>
                 <Button
                     size='large'

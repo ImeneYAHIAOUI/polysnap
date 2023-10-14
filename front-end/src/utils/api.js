@@ -5,6 +5,7 @@ const USER_SERVICE_URL = process.env.REACT_APP_USER_SERVICE_URL;
 const STORY_SERVICE_URL = process.env.REACT_APP_STORY_SERVICE_URL;
 const CHAT_SERVICE_URL = process.env.REACT_APP_CHATS_SERVICE_URL;
 const MESSAGES_SERVICE_URL = process.env.REACT_APP_MESSAGES_SERVICE_URL;
+const MEDIA_SERVICE_URL = process.env.REACT_APP_MEDIA_SERVICE_URL;
 
 axios.defaults.headers["Access-Control-Allow-Origin"] = "*";
 axios.defaults.headers["Access-Control-Allow-Headers"] =
@@ -140,6 +141,7 @@ export const createChat = async (data) => {
 
 export const getLastNMessages = async (chatId,userId, number) => {
   try{
+    console.log(`${MESSAGES_SERVICE_URL}?chatId=${chatId}&userId=${userId}&number=${number}`);  
     const res = await axios.get(`${MESSAGES_SERVICE_URL}?chatId=${chatId}&userId=${userId}&number=${number}`, config);
     return res.data;
   }catch(err){
@@ -157,3 +159,14 @@ export const sendMessage = async (data) => {
     return null;
   }
 }
+
+// export const uploadAttachement = async (data) => {
+//   try{
+//     const res = await axios.post(`${MEDIA_SERVICE_URL}/generate-upload-url`, data.upload, config).then((res) => {
+      
+//     });
+//   }catch(err){
+//     toast.error(`Uploading attachment unsuccessful: ${err.message}`);
+//     return null;
+//   }
+// }

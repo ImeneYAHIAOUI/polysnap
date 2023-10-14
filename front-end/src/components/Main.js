@@ -56,12 +56,12 @@ export default function Main({}){
                     </Grid>
                 </Grid>
                 <Grid item xs={8.5} >
-                    <Item style={{ height: '100%'}} >
+                    <Item style={{ height: '98%'}} >
                         <Chat currentChat={currentChat} />
                     </Item>
                 </Grid>
                 <Grid item xs={1} >
-                    <Item style={{ height: '100%'}} >
+                    <Item style={{ height: '98%'}} >
                         <StoriesList />
                     </Item>
                 </Grid>
