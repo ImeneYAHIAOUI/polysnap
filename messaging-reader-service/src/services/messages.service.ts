@@ -19,40 +19,66 @@ export class MessageService {
   async findAll(): Promise<Message[]> {
     return this.messageRepository.find({
       order: {
-        date: 'ASC'
+        date: 'DESC'
       }
     });
   }
 
-  async getUnreadMessages(chatId: number, userId: number): Promise<any[]> {
-    console.log("getting unread message begin");
-
-    let entities = await this.findAll();
+  async getAllMessagesByNumbers(chatId: number, userId: number, n: number): Promise<any[]> {
+    const start = performance.now();
   
-    const unreadMessages = entities.filter((entity) => {
-      if (!entity.seenBy.includes(userId) && entity.chatId == chatId) {
-        if (entity.expirationTime != null && entity.expirationTime != 0) {
-          if (addMinutes( entity.date, entity.expirationTime) > new Date()) {
-            return true;
-          }
-        } else {
-          return true;
-        }
-      }
-      return false;
-    });
+    console.log("getting all messages begin");
+  
+  const filteredMessages2 = await this.messageRepository
+  .createQueryBuilder('entity')
+  .where('entity.chatId = :chatId', { chatId })
+  .andWhere(
+    '((entity.expiring = false) OR ' +
+    '(CAST(entity.seenBy AS TEXT) NOT LIKE :userId AND entity.expirationTime = 0 AND entity.expiring = true) OR ' +
+    '(entity.expiring = true AND entity.expirationTime > 0 AND ' +
+    'entity.date + make_interval(mins => entity.expirationTime) > :currentDate))',
+    { userId: `%${userId}%`, currentDate: new Date() }
+  )
+  .orderBy('entity.date', 'DESC')
+  .limit(n)
+  .getMany();
     
-    console.log("getting unread message end filtering" + unreadMessages.length)
+    this.updateMessages(userId, filteredMessages2);
 
-    for (const message of unreadMessages) {
-      console.log("messages " + message.toString());
-      await this.updateMessage(message, userId);
-    }
-    console.log("ENDDD")
+    return filteredMessages2;
+  }
   
-    return unreadMessages;
+  
+  async updateMessages(userId: number, messages: Message[]): Promise<void> {
+    const messageIds = messages
+  .filter((message) => {
+    for (const s of message.seenBy) {
+      if (s == userId){
+        return false;
+      } 
+    }
+    return true;
+  })
+  .map((message) => message.id);
+  
+    if (messageIds.length === 0) {
+      return;
+    }
+  
+    await this.messageRepository.createQueryBuilder()
+    .update(Message)
+    .set({ seenBy: () => `seenBy || '[${userId}]'::jsonb` })
+    .where("id IN (:...messageIds)", { messageIds })
+    .execute();
   }
 
+  async deleteAll(): Promise<void> {
+    await this.messageRepository.createQueryBuilder()
+      .delete()
+      .from(Message)
+      .execute();
+  }
+/*
   async getAllMessagesFromDate(chatId: number, userId: number, specificDate: Date): Promise<any[]> {
   
     console.log("getting all messages begin from date " + specificDate);
@@ -71,51 +97,33 @@ export class MessageService {
   
     for (const message of filteredMessages) {
       console.log("messages " + message.toString());
-      await this.updateMessage(message, userId);
+      //this.updateMessage(message, userId);
     }
   
     return filteredMessages;
   }
 
-  
-  async getAllMessagesByNumbers(chatId: number, userId: number, n: number): Promise<any[]> {
-    console.log("getting all messages begin from date");
-  
-    let entities = await this.findAll();
 
-    const filteredMessages = entities.filter(entity => ( entity.chatId == chatId && (
-      (!entity.expiring || !entity.seenBy.includes(userId)) ||
-      ((entity.expirationTime != null || entity.expirationTime != 0) &&
-          addMinutes(entity.date, entity.expirationTime) > new Date()))
-  ));
+  async getUnreadMessages(chatId: number, userId: number): Promise<Message[]> {
+    const start = performance.now();
 
-  const firstMessages = filteredMessages.slice(0, n);
+    console.log("getting unread message begin");
   
-    console.log("getting all messages end filtering");
+    const messages = await this.messageRepository.createQueryBuilder("message")
+    .where("message.chatId = :chatId", { chatId })
+    .andWhere((qb) => {
+      qb.where("NOT EXISTS (SELECT 1 FROM jsonb_array_elements(message.seenBy) AS seen WHERE seen = :userId)", { userId : userId.toString() })
+    })
+    .andWhere("message.expirationTime IS NULL OR message.expirationTime = 0 OR message.date + (message.expirationTime * interval '1 minute') > NOW()")
+    .orderBy("message.date", "ASC")
+    .getMany();
+    
+    const end = performance.now();
+    console.log(`Execution time: ${end - start} milliseconds`);  
   
-    for (const message of firstMessages) {
-      console.log("messages " + message.toString());
-      await this.updateMessage(message, userId);
-    }
-  
-    return firstMessages;
+    return messages;
   }
-  
-
-  async updateMessage(message: any, userId: number): Promise<void> {
-    console.log("getting unread message begin updating");
-  
-    if (!message.seenBy) {
-      message.seenBy = [];
-    }
-      if (!message.seenBy.includes(userId)) {
-      message.seenBy.push(userId);
-    }
-      await this.messageRepository.save(message);
-  
-    console.log("getting unread message end updating");
-  }
-  
+  */
 
   async deleteMessage(messageId: number): Promise<void> {
     const messageToDelete = await this.messageRepository.findOne({where: {id: messageId}});
