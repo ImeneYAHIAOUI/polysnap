@@ -174,12 +174,15 @@ const Chat = ({ currentChat }) => {
     const pollingMessages = () => {
       console.log("polling");
       currentChat && 
-      receivedPollingReply &&
-      setReceivedPollingReply(false) &&
-      getLastNMessages(currentChat.id, JSON.parse(localStorage.getItem('userdata')).id, 10).then((res) => {
-        res && setMessages(res);
-        setReceivedPollingReply(true);
-      });
+      receivedPollingReply && 
+      (() => {
+        setReceivedPollingReply(false);
+        getLastNMessages(currentChat.id, JSON.parse(localStorage.getItem('userdata')).id, 10).then((res) => {
+          console.log(res);
+          res && setMessages(res);
+          setReceivedPollingReply(true);
+        });
+      })(); 
     }
 
     const startPolling = () => {
