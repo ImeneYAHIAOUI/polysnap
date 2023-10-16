@@ -34,7 +34,7 @@ jobs:
       id: 'auth'
       uses: 'google-github-actions/auth@v1'
       with:
-        workload_identity_provider: "principal://iam.googleapis.com/projects/241792550769/locations/global/workloadIdentityPools/polysnap/subject/SUBJECT_ATTRIBUTE_VALUE"
+        workload_identity_provider: "https://iam.googleapis.com/projects/241792550769/locations/global/workloadIdentityPools/polysnap/providers/github"
         service_account: "cloud-398911@appspot.iam.gserviceaccount.com"
 
  
