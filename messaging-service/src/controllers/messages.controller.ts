@@ -10,9 +10,8 @@ export class MessageController {
 
   @Post()
   async createMessage(@Body() body : MessageDTO) {
-    await this.appService.publishMessage(body);
-    
-      return 'Message published';
+    await this.appService.publishMessage(body);  
+    return 'Message published';
   }
 
   @Get("redis")
