@@ -29,7 +29,7 @@ jobs:
 
     - name: Build
       run: cd messaging-service && npm run build # Change to your build command
-
+    
     - name: 'Google auth'
       id: 'auth'
       uses: 'google-github-actions/auth@v1'
@@ -37,7 +37,9 @@ jobs:
         workload_identity_provider: "principal://iam.googleapis.com/projects/241792550769/locations/global/workloadIdentityPools/polysnap/subject/SUBJECT_ATTRIBUTE_VALUE"
         service_account: "cloud-398911@appspot.iam.gserviceaccount.com"
 
-
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0
+      
     - name: Deploy to App Engine (from messaging-service)
       id: "deploy"
       uses: "google-github-actions/deploy-appengine@v0"
