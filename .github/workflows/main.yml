@@ -38,6 +38,8 @@ jobs:
         workload_identity_provider: "principal://iam.googleapis.com/projects/241792550769/locations/global/workloadIdentityPools/polysnap/subject/SUBJECT_ATTRIBUTE_VALUE"
         service_account: "cloud-398911@appspot.iam.gserviceaccount.com"
 
+    - name : activate 
+      run : cd messagin-service && gcloud auth login
   
     - name: Deploy to App Engine (from messaging-service)
       id: "deploy"
