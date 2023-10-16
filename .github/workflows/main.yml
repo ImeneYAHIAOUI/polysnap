@@ -24,7 +24,7 @@ jobs:
       run: ls
 
     - name: Install dependencies
-      run: npm install # Change to your package manager (e.g., yarn)
+      run: cd messaging-service && npm install # Change to your package manager (e.g., yarn)
 
     - name: Build
       run: npm run build # Change to your build command
