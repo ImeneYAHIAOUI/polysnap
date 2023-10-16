@@ -2,7 +2,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { MessageService } from 'src/services/messages.service';
 
-import { Message } from 'src/entities/message.save.entity';
 
 @Controller("messages")
 export class MessageController {
@@ -10,8 +9,10 @@ export class MessageController {
 
   @Post()
   async subscribeToTopic(@Body() requestBody: any) {
+    const start = performance.now();
+
     console.log('Received request body:', requestBody);
-    this.messageService.subscribeToTopic(requestBody);
+    this.messageService.subscribeToTopic(requestBody);  
     return 'Subscribed to topic';
   }
 

@@ -25,9 +25,8 @@ export class MessageService {
   }
 
   async getAllMessagesByNumbers(chatId: number, userId: number, n: number): Promise<any[]> {
-    const start = performance.now();
   
-    console.log("getting all messages begin");
+    console.log("getting all messages begin by numbers");
   
   const filteredMessages2 = await this.messageRepository
   .createQueryBuilder('entity')
@@ -42,12 +41,15 @@ export class MessageService {
   .orderBy('entity.date', 'DESC')
   .limit(n)
   .getMany();
+  const filteredMessagesReversed = filteredMessages2.reverse();
+
     
+
     this.updateMessages(userId, filteredMessages2);
 
-    return filteredMessages2;
+    return filteredMessagesReversed;
   }
-  
+
   
   async updateMessages(userId: number, messages: Message[]): Promise<void> {
     const messageIds = messages

@@ -28,17 +28,11 @@ export class MessagesCleanUpService {
       if (message.expiring) {
         if (message.expirationTime != null || message.expirationTime != 0) {
           const expirationDate = addMinutes(message.date, message.expirationTime);
-          console.log('expirationDate ' + expirationDate);
-
-          console.log('message id ' + message.id);
           const currentDate = new Date();
-          console.log('currentDate ' + currentDate);
           if (currentDate >= expirationDate) {
-            console.log('Deleting message ' + message.id);
             await this.messageService.deleteMessage(message.id);
           }
         } else {
-          console.log('Deleting message SEEN  ' + message.id);
           this.cleanAllReadenMessages(message);
         }
       }

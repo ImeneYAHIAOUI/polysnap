@@ -95,8 +95,7 @@ async test1000Messages() {
 
 
   async publishMessage(message: MessageDTO): Promise<void> {
-        console.log(message.chatId);
-        console.log(message.senderId);
+/*
 
       const bool = await this.chatService.checkChatExists(message.chatId);
       if(!bool){
@@ -106,13 +105,14 @@ async test1000Messages() {
       if(!bool2){
         throw new NotFoundException("user not found exception");
       }
+      */
       const topicName = 'projects/cloud-398911/topics/message_queue';
       
       const timestamp = new Date().getTime(); 
       const random = Math.random().toString(36).substring(2, 10); 
 
       const uniqueKey = `${timestamp}-${random}`;
-      await this.redisClient.set(uniqueKey, JSON.stringify(message));
+      this.redisClient.set(uniqueKey, JSON.stringify(message));
   
 
       // Publish the message
