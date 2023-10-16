@@ -10,6 +10,7 @@ export class MessageController {
 
   @Post()
   async createMessage(@Body() body : MessageDTO) {
+    console.log("testing");
     await this.appService.publishMessage(body);  
     return 'Message published';
   }
@@ -17,6 +18,11 @@ export class MessageController {
   @Get("redis")
   async getAllElementsFromRedis() {
     return await this.appService.getAllMessagesFromRedis();
+  }
+
+  @Post("redis/deleteAll")
+  async deleteAllElementsFromRedis() {
+    return await this.appService.deleteAllMessagesFromRedis();
   }
 
   @Post('test')

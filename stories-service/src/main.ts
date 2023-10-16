@@ -14,7 +14,7 @@ async function bootstrap() {
     );
     next();
   });
-  
+  app.enableShutdownHooks();
   const config = new DocumentBuilder()
     .setTitle('Votre API')
     .setDescription('Description de votre API')

@@ -1,6 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnApplicationShutdown } from '@nestjs/common';
 import { User } from '../entities/user.entity';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, getConnectionManager } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import {
@@ -15,8 +15,17 @@ import { ContactAlreadyExists } from 'src/exceptions/ContactAlreadyExists';
 import { Contact } from '../entities/contact.entity';
 
 @Injectable()
-export class UserService implements IUserService {
+export class UserService implements IUserService, OnApplicationShutdown {
   private readonly logger = new Logger(UserService.name);
+
+  onApplicationShutdown() {
+    this.logger.warn('Intercepting SIGNTERM');
+    this.closeDBConnection();
+  }
+
+  closeDBConnection() {
+    this.logger.log('DB conn closed');
+  }
 
   constructor(
     @InjectRepository(User)

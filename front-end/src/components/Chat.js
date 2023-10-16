@@ -231,6 +231,8 @@ const Chat = ({ currentChat }) => {
                       attachment.type = selectedFile.type.split('/')[0];
                       attachment.name = selectedFile.name;
                       attachment.link = process.env.REACT_APP_BUCKET_URL + selectedFile.name;
+                      console.log("here");
+                      console.log(process.env.REACT_APP_BUCKET_URL + selectedFile.name);
                       _handleSendHelper(messageBody);
                   })
               };

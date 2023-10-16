@@ -1,10 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, OnApplicationShutdown } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Chat } from 'src/entities/chat.entity';
 
 @Injectable()
-export class ChatService {
+export class ChatService implements OnApplicationShutdown{
+
+  private readonly logger = new Logger(ChatService.name);
+
+  onApplicationShutdown() {
+    this.logger.warn('Intercepting SIGNTERM');
+    this.closeDBConnection();
+  }
+
+  closeDBConnection() {
+    this.logger.log('DB conn closed');
+  }
 
   async findAllChatsByUser(id: number): Promise<Chat[]> {
     console.log(id);

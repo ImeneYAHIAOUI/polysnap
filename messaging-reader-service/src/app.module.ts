@@ -15,7 +15,7 @@ import { User } from './entities/user.entity';
     TypeOrmModule.forFeature([Message, Chat, User]),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: '/cloudsql/cloud-398911:us-central1:polysnap',
+      host: '/cloudsql/cloud-final-402019:europe-west9:polysnap',
       port: 5432,
       username: 'user',
       password: 'storypassword',

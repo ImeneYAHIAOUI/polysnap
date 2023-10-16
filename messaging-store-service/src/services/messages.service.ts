@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { PubSub } from '@google-cloud/pubsub';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, OnApplicationShutdown, Logger } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -8,10 +8,20 @@ import { Message } from 'src/entities/message.save.entity';
 import { ChatService } from './chats.service';
 
 @Injectable()
-export class MessageService {
+export class MessageService implements OnApplicationShutdown {
+
+  private readonly logger = new Logger(MessageService.name);
 
   private pubsub: PubSub;
 
+  onApplicationShutdown() {
+    this.logger.warn('Intercepting SIGNTERM');
+    this.closeDBConnection();
+  }
+
+  closeDBConnection() {
+    this.logger.log('DB conn closed');
+  }
 
   constructor( @InjectRepository(Message)
   private messageRepository: Repository<Message>,private chatService: ChatService ) {

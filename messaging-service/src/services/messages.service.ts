@@ -9,6 +9,9 @@ import { UserProxyService } from './user.proxy.service';
 
 @Injectable()
 export class MessageService {
+
+
+
   private pubsub: PubSub;
   private redisClient: Redis;
   
@@ -26,6 +29,23 @@ export class MessageService {
       password: "7xFUkj6zetIM7P1oPhs",
     });
   }
+
+
+  async deleteAllMessagesFromRedis() {
+    try {
+      // Supprimer toutes les clés de Redis
+      const keys = await this.redisClient.keys('*');
+      if (keys.length > 0) {
+        console.log('Deleting messages from Redis...');
+        await this.redisClient.del(...keys);
+        console.log('Messages deleted successfully.');
+      }
+    } catch (error) {
+      console.error('Error deleting messages from Redis:', error);
+      throw error;
+    }
+  }
+  
 
 
 async getAllMessagesFromRedis(): Promise<MessageDTO[]> {
@@ -106,7 +126,7 @@ async test1000Messages() {
         throw new NotFoundException("user not found exception");
       }
       */
-      const topicName = 'projects/cloud-398911/topics/message_queue';
+      const topicName = 'projects/cloud-final-402019/topics/messaging_queue';
       
       const timestamp = new Date().getTime(); 
       const random = Math.random().toString(36).substring(2, 10); 

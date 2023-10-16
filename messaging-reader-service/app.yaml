@@ -1,5 +1,9 @@
 runtime: nodejs18
 service: messagereader
+automatic_scaling:
+  target_cpu_utilization: 0.7
+  min_instances: 1
+  max_instances: 10
 env_variables:
   NODE_ENV: production
 # includes:
