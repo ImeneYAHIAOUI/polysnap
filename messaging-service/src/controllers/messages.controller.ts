@@ -19,6 +19,11 @@ export class MessageController {
     return await this.appService.getAllMessagesFromRedis();
   }
 
+  @Post("redis/deleteAll")
+  async deleteAllElementsFromRedis() {
+    return await this.appService.deleteAllMessagesFromRedis();
+  }
+
   @Post('test')
   async test(): Promise<void> {
     this.appService.test1000Messages();
