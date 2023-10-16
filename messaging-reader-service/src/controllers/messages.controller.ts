@@ -37,6 +37,7 @@ export class MessageController {
     @Query('number') number: number,
     @Query('userId') userId: number,
   ): Promise<any[]> {
+    
     return this.messageService.getAllMessagesByNumbers(chatId, userId, number);
   }
 
