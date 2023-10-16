@@ -18,16 +18,13 @@ jobs:
       with:
         node-version: 14
         
-    - name: Change to messaging-service directory
-      run: cd ./messaging-service
-    - name: LS
-      run: ls
+ 
 
     - name: Install dependencies
       run: cd messaging-service && npm install # Change to your package manager (e.g., yarn)
 
     - name: Build
-      run: npm run build # Change to your build command
+      run: cd messaging-service && npm run build # Change to your build command
 
     - name: 'Google auth'
       id: 'auth'
@@ -39,4 +36,4 @@ jobs:
    
 
     - name: Deploy to App Engine (from messaging-service)
-      run: gcloud app deploy --quiet
+      run: cd messaging-service && gcloud app deploy --quiet
