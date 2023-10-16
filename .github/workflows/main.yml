@@ -39,7 +39,7 @@ jobs:
         service_account: "cloud-398911@appspot.iam.gserviceaccount.com"
 
     - name : activate 
-      run : cd messagin-service && gcloud auth login
+      run : cd messaging-service && gcloud auth login
   
     - name: Deploy to App Engine (from messaging-service)
       id: "deploy"
