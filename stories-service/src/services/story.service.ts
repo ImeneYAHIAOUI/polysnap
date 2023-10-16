@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnApplicationShutdown } from '@nestjs/common';
 import { StoryDto } from '../dto/story.dto';
 import { CreateStoryDto } from '../dto/create-story.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,7 +13,7 @@ import { SaveStoryDto } from '../dto/saveStory.dto';
 import { FileNotFoundException } from '../exceptions/file-not-found.exception';
 
 @Injectable()
-export class StoryService {
+export class StoryService implements OnApplicationShutdown {
   private readonly logger = new Logger(StoryService.name);
   constructor(
     @InjectRepository(Story)
@@ -21,6 +21,15 @@ export class StoryService {
     private storageService: StorageService,
     private readonly usersProxyService: UsersProxyService,
   ) {}
+
+  onApplicationShutdown() {
+    this.logger.warn('Intercepting SIGNTERM');
+    this.closeDBConnection();
+  }
+
+  closeDBConnection() {
+    this.logger.log('DB conn closed');
+  }
 
   async emptyStoriesDB(): Promise<void> {
     await this.storiesRepository.clear();

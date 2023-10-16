@@ -17,7 +17,7 @@ async function bootstrap() {
     );
     next();
   });
-  
+  app.enableShutdownHooks();
   app.useGlobalPipes(new ValidationPipe());
   app.set('trust proxy', 'loopback');
   try {
