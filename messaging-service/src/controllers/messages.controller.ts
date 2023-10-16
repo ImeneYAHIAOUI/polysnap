@@ -10,6 +10,7 @@ export class MessageController {
 
   @Post()
   async createMessage(@Body() body : MessageDTO) {
+    console.log("testing");
     await this.appService.publishMessage(body);  
     return 'Message published';
   }
