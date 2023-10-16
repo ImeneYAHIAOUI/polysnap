@@ -2,10 +2,8 @@
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-import { FixedSizeList } from 'react-window';
 import { makeStyles } from '@mui/styles';
 import { Avatar, Box, Button, Modal, Typography, LinearProgress, Input } from '@mui/material';
-import { CardMedia } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { Fragment, useEffect, useState } from 'react';
 

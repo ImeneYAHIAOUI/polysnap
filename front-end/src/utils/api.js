@@ -141,7 +141,7 @@ export const createChat = async (data) => {
 
 export const getLastNMessages = async (chatId,userId, number) => {
   try{
-    console.log(`${MESSAGES_SERVICE_URL}?chatId=${chatId}&userId=${userId}&number=${number}`);  
+   // console.log(`${MESSAGES_SERVICE_URL}?chatId=${chatId}&userId=${userId}&number=${number}`);  
     const res = await axios.get(`${MESSAGES_SERVICE_URL}?chatId=${chatId}&userId=${userId}&number=${number}`, config);
     return res.data;
   }catch(err){

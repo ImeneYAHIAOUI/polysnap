@@ -126,7 +126,7 @@ async test1000Messages() {
         throw new NotFoundException("user not found exception");
       }
       */
-      const topicName = 'projects/cloud-398911/topics/message_queue';
+      const topicName = 'projects/cloud-final-402019/topics/messaging_queue';
       
       const timestamp = new Date().getTime(); 
       const random = Math.random().toString(36).substring(2, 10); 
