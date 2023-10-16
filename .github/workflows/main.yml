@@ -19,7 +19,7 @@ jobs:
         node-version: 14
         
     - name: Change to messaging-service directory
-      run: cd messaging-service
+      run: ls
 
     - name: Install dependencies
       run: npm install # Change to your package manager (e.g., yarn)
