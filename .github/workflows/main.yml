@@ -35,10 +35,13 @@ jobs:
       id: 'auth'
       uses: 'google-github-actions/auth@v1'
       with:
-        workload_identity_provider: 'principal://iam.googleapis.com/projects/241792550769/locations/global/workloadIdentityPools/polysnap/subject/SUBJECT_ATTRIBUTE_VALUE'
+        workload_identity_provider: "principal://iam.googleapis.com/projects/241792550769/locations/global/workloadIdentityPools/polysnap/subject/SUBJECT_ATTRIBUTE_VALUE"
         service_account: "cloud-398911@appspot.iam.gserviceaccount.com"
 
-   
-
+  
     - name: Deploy to App Engine (from messaging-service)
-      run: cd messaging-service && gcloud app deploy --quiet
+      id: "deploy"
+      uses: "google-github-actions/deploy-appengine@v0"
+      with:
+        project_id: "cloud-398911"
+        deliverables: './app.yaml'
