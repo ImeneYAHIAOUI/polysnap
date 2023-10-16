@@ -44,4 +44,4 @@ jobs:
       uses: "google-github-actions/deploy-appengine@v0"
       with:
         project_id: "cloud-398911"
-        deliverables: './app.yaml'
+        deliverables: './messaging-service/app.yaml'
