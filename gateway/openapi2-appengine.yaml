@@ -7,10 +7,11 @@ schemes:
   - https
 produces:
   - application/json
-host: "polysnap-gateway-1i6xp2f783nz2.apigateway.cloud-final-402019.cloud.goog"
+host: "polysnap-gateway-36l5nr57q2k3e.apigateway.cloud-398911.cloud.goog"
 x-google-endpoints:
-  - name: "polysnap-gateway-1i6xp2f783nz2.apigateway.cloud-final-402019.cloud.goog"
+  - name: "polysnap-gateway-36l5nr57q2k3e.apigateway.cloud-398911.cloud.goog"
     allowCors: True
+
 
 paths:
   /stories:
@@ -107,17 +108,19 @@ paths:
             schema:
               type: string
 
-  /stories/story/contact/{userId}:
+  /story/contact/{userId}:
     get:
       summary: Get contact stories of a user
       operationId: getContactStoryOfUser
-      parameters: # Define the path parameter here
-        - name: userId        # Name of the path parameter
-          in: path            # Location of the parameter
-          required: true      # Specify if it's required
-          type: string        # The data type of userId
+      parameters:
+        - name: userId
+          in: path
+          type: integer
+          required: true
       x-google-backend:
-        address: https://stories-dot-cloud-398911.lm.r.appspot.com/story/contact/{userId}
+        address: https://stories-dot-cloud-398911.lm.r.appspot.com
+        path_translation: APPEND_PATH_TO_ADDRESS
+
       responses:
         '200':
           description: A successful response
@@ -319,12 +322,13 @@ paths:
         '200':
           description: A successful response
 
-  /messagesender/chats/{id}:
+  /chats/{id}:
     get:
       summary: Get a chat by ID
       operationId: findChat
       x-google-backend:
-        address: https://messagesender-dot-cloud-398911.lm.r.appspot.com/chats/{id}
+        address: https://messagesender-dot-cloud-398911.lm.r.appspot.com
+        path_translation: APPEND_PATH_TO_ADDRESS
       parameters:
         - name: id
           in: path
@@ -338,7 +342,8 @@ paths:
       summary: Delete a chat by ID
       operationId: deleteChatById
       x-google-backend:
-        address: https://messagesender-dot-cloud-398911.lm.r.appspot.com/chats/{id}
+        address: https://messagesender-dot-cloud-398911.lm.r.appspot.com
+        path_translation: APPEND_PATH_TO_ADDRESS
       parameters:
         - name: id
           in: path
