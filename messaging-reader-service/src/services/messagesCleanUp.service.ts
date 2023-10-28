@@ -27,9 +27,23 @@ export class MessagesCleanUpService {
     for (const message of messages) {
       if (message.expiring) {
         if (message.expirationTime != null || message.expirationTime != 0) {
-          const expirationDate = addMinutes(message.date, message.expirationTime);
-          const currentDate = new Date();
-          if (currentDate >= expirationDate) {
+          const expirationDate = addMinutes(
+            message.date,
+            message.expirationTime,
+          );
+          const now = new Date();
+          const utcNow = new Date(
+            Date.UTC(
+              now.getUTCFullYear(),
+              now.getUTCMonth(),
+              now.getUTCDate(),
+              now.getUTCHours(),
+              now.getUTCMinutes(),
+              now.getUTCSeconds(),
+              now.getUTCMilliseconds(),
+            ),
+          );
+          if (utcNow >= expirationDate) {
             await this.messageService.deleteMessage(message.id);
           }
         } else {
@@ -49,7 +63,9 @@ export class MessagesCleanUpService {
   }
 
   async getChatParticipantsByName(chatId: number): Promise<number[]> {
-    const chatEntity = await this.chatRepository.findOne({ where: { id: chatId } });
+    const chatEntity = await this.chatRepository.findOne({
+      where: { id: chatId },
+    });
     return chatEntity.participants;
   }
 }

@@ -56,6 +56,17 @@ async getAllMessagesFromRedis(): Promise<MessageDTO[]> {
     // Create an array to store the parsed messages
     const messages: MessageDTO[] = [];
 
+    const now = new Date();
+    const utcNow = new Date(Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        now.getUTCHours(),
+        now.getUTCMinutes(),
+        now.getUTCSeconds(),
+        now.getUTCMilliseconds()
+    ));
+
     // Fetch the values for each key, parse the JSON, and create MessageDTO objects
     for (const key of keys) {
       const value = await this.redisClient.get(key);
@@ -70,7 +81,7 @@ async getAllMessagesFromRedis(): Promise<MessageDTO[]> {
             attachment: parsedValue.attachment,
             expiring: parsedValue.expiring,
             expirationTime: parsedValue.expirationTime,
-            date: new Date(),
+            date: utcNow,
           };
           messages.push(messageDTO);
         }
@@ -85,6 +96,17 @@ async getAllMessagesFromRedis(): Promise<MessageDTO[]> {
 }
 
 async test1000Messages() {
+
+  const now = new Date();
+  const utcNow = new Date(Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      now.getUTCHours(),
+      now.getUTCMinutes(),
+      now.getUTCSeconds(),
+      now.getUTCMilliseconds()
+  ));
   for (let i = 0; i < 1000; i++) {
     const message: MessageDTO = {
 
@@ -104,7 +126,7 @@ async test1000Messages() {
     
       expirationTime: 0,
     
-      date: new Date()
+      date: utcNow,
     
     };
 
@@ -126,9 +148,20 @@ async test1000Messages() {
         throw new NotFoundException("user not found exception");
       }
       */
+
+    const now = new Date();
+    const utcNow = new Date(Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        now.getUTCHours(),
+        now.getUTCMinutes(),
+        now.getUTCSeconds(),
+        now.getUTCMilliseconds()
+    ));
       const topicName = process.env.PUBSUB_TOPIC_NAME;
       
-      const timestamp = new Date().getTime(); 
+      const timestamp = utcNow.getTime();
       const random = Math.random().toString(36).substring(2, 10); 
 
       const uniqueKey = `${timestamp}-${random}`;

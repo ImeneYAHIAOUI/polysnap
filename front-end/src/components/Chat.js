@@ -209,6 +209,17 @@ const Chat = ({ currentChat }) => {
       name: "",
       link: "",
     }
+
+    const now = new Date();
+    const utcNow = new Date(Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        now.getUTCHours(),
+        now.getUTCMinutes(),
+        now.getUTCSeconds(),
+        now.getUTCMilliseconds()
+    ));
     const messageBody = {
       chatId: currentChat.id,
       senderId: JSON.parse(localStorage.getItem('userdata')).id,
@@ -216,7 +227,7 @@ const Chat = ({ currentChat }) => {
       attachment: attachment,
       expiring: expiring,
       expirationTime: +expirationTime,
-      date: new Date(),
+      date: utcNow,
     }
     if(selectedFile){
       getUploadUrl({filename:`${selectedFile.name}`, filetype:`${selectedFile.type}`})

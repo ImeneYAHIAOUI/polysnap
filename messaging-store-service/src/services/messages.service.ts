@@ -1,11 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { PubSub } from '@google-cloud/pubsub';
-import { Injectable, NotFoundException, OnApplicationShutdown, Logger } from '@nestjs/common';
-import { randomUUID } from 'crypto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Message } from 'src/entities/message.save.entity';
-import { ChatService } from './chats.service';
+import {PubSub} from '@google-cloud/pubsub';
+import {Injectable, Logger, OnApplicationShutdown} from '@nestjs/common';
+import {InjectRepository} from '@nestjs/typeorm';
+import {Repository} from 'typeorm';
+import {Message} from 'src/entities/message.save.entity';
+import {ChatService} from './chats.service';
 
 @Injectable()
 export class MessageService implements OnApplicationShutdown {
@@ -29,9 +28,18 @@ export class MessageService implements OnApplicationShutdown {
   }
 
   async addMessage(message : Message): Promise<Message> {
-    message.date = new Date();
-    const savedMessage = await this.messageRepository.save(message);
-    return savedMessage;
+    const now = new Date();
+    const utcNow = new Date(Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        now.getUTCHours(),
+        now.getUTCMinutes(),
+        now.getUTCSeconds(),
+        now.getUTCMilliseconds()
+    ));
+    message.date = utcNow;
+    return await this.messageRepository.save(message);
   }
 
   async getAllMessages(): Promise<Message[]> {

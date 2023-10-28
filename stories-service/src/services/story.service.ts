@@ -37,8 +37,20 @@ export class StoryService implements OnApplicationShutdown {
   async removeExpiredStories(): Promise<void> {
     const now = new Date();
     const allStories = await this.storiesRepository.find();
+    const utcNow = new Date(
+      Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        now.getUTCHours(),
+        now.getUTCMinutes(),
+        now.getUTCSeconds(),
+        now.getUTCMilliseconds(),
+      ),
+    );
+
     const expiredStories = allStories.filter(
-      (story) => !story.isRemoved && story.expirationTime < now,
+      (story) => !story.isRemoved && story.expirationTime < utcNow,
     );
 
     for (const story of expiredStories) {
@@ -139,24 +151,38 @@ export class StoryService implements OnApplicationShutdown {
   async saveStory(saveStoryDto: SaveStoryDto) {
     if (!(await this.storageService.verifyStoryExists(saveStoryDto.filename)))
       throw new FileNotFoundException(saveStoryDto.filename);
+    const currentUTCDate = new Date(
+      Date.UTC(
+        new Date().getUTCFullYear(),
+        new Date().getUTCMonth(),
+        new Date().getUTCDate(),
+        new Date().getUTCHours(),
+        new Date().getUTCMinutes(),
+        new Date().getUTCSeconds(),
+        new Date().getUTCMilliseconds(),
+      ),
+    );
     const newStory = this.storiesRepository.create({
       title: saveStoryDto.title,
       userId: saveStoryDto.userId,
       filename: saveStoryDto.filename,
       format: saveStoryDto.format,
       isRemoved: false,
-      creationTime: new Date(),
+      creationTime: currentUTCDate,
     });
     console.log(newStory.creationTime);
-    const expirationDate = new Date(newStory.creationTime);
-    expirationDate.setHours(expirationDate.getHours() + 3);
+    const expirationDate = new Date(currentUTCDate);
+    expirationDate.setUTCHours(expirationDate.getUTCHours() + 3);
     newStory.expirationTime = expirationDate;
     return await this.storiesRepository.save(newStory);
   }
 
   async createStory(createStoryDto: CreateStoryDto): Promise<UploadDto> {
     this.logger.log(`Creating story ${JSON.stringify(createStoryDto)}`);
-    const url = await this.storageService.generate(createStoryDto.filename, createStoryDto.filetype);
+    const url = await this.storageService.generate(
+      createStoryDto.filename,
+      createStoryDto.filetype,
+    );
     return {
       uploadUrl: url,
     };
