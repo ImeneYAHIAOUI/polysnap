@@ -7,76 +7,67 @@ schemes:
   - https
 produces:
   - application/json
-host: "polysnap-gateway-36l5nr57q2k3e.apigateway.cloud-398911.cloud.goog"
+host: "polysnap-gateway-1i6xp2f783nz2.apigateway.cloud-final-402019.cloud.goog"
 x-google-endpoints:
-  - name: "polysnap-gateway-36l5nr57q2k3e.apigateway.cloud-398911.cloud.goog"
+  - name: "polysnap-gateway-1i6xp2f783nz2.apigateway.cloud-final-402019.cloud.goog"
     allowCors: True
 
 
 paths:
-  /stories:
-    get:
-      summary: manage stories
-      operationId: stories
-      x-google-backend:
-        address: https://stories-dot-cloud-398911.lm.r.appspot.com
-      responses:
-        '200':
-          description: A successful response
-          schema:
-            type: string
-  /stories/story:
+
+  /story:
     get:
       summary: manage stories
       operationId: get stories
       x-google-backend:
-        address: https://stories-dot-cloud-398911.lm.r.appspot.com/story
+        address: https://stories-dot-cloud-final-402019.oa.r.appspot.com/story
       responses:
         '200':
           description: A successful response
           schema:
             type: string
+
     post:
       summary: Create a story
       operationId: createStory
       x-google-backend:
-        address: https://stories-dot-cloud-398911.lm.r.appspot.com/story
+        address: https://stories-dot-cloud-final-402019.oa.r.appspot.com/story
       responses:
         '200':
           description: A successful response
           schema:
             type: string
 
-  /stories/story/search:
+  /story/search:
       get:
         summary: Search stories
         operationId: searchStories
         x-google-backend:
-          address: https://stories-dot-cloud-398911.lm.r.appspot.com/story/search
+          address: https://stories-dot-cloud-final-402019.oa.r.appspot.com/story/search
         responses:
           '200':
             description: A successful response
             schema:
               type: string
 
-  /stories/story/remove-expired:
+  /story/remove-expired:
       post:
         summary: Remove expired stories
         operationId: removeExpiredStories
         x-google-backend:
-          address: https://stories-dot-cloud-398911.lm.r.appspot.com/story/remove-expired
+          address: https://stories-dot-cloud-final-402019.oa.r.appspot.com/story/remove-expired
         responses:
           '200':
             description: A successful response
             schema:
               type: string
 
-  /stories/story/empty-db:
+  /story/empty-db:
       post:
         summary: Empty stories DB
         operationId: emptyStoriesDB
         x-google-backend:
-          address: https://stories-dot-cloud-398911.lm.r.appspot.com/story/empty-db
+          address: https://stories-dot-cloud-final-402019.oa.r.appspot.com/story/empty-db
         responses:
           '200':
             description: A successful response
@@ -84,24 +75,24 @@ paths:
               type: string
 
 
-  /stories/story/save:
+  /story/save:
       post:
         summary: Save a story
         operationId: saveStory
         x-google-backend:
-          address: https://stories-dot-cloud-398911.lm.r.appspot.com/story/save
+          address: https://stories-dot-cloud-final-402019.oa.r.appspot.com/story/save
         responses:
           '200':
             description: A successful response
             schema:
               type: string
 
-  /stories/story/all:
+  /story/all:
       get:
         summary: Get all stories
         operationId: getAllStories
         x-google-backend:
-          address: https://stories-dot-cloud-398911.lm.r.appspot.com/story/all
+          address: https://stories-dot-cloud-final-402019.oa.r.appspot.com/story/all
         responses:
           '200':
             description: A successful response
@@ -118,7 +109,7 @@ paths:
           type: integer
           required: true
       x-google-backend:
-        address: https://stories-dot-cloud-398911.lm.r.appspot.com
+        address: https://stories-dot-cloud-final-402019.oa.r.appspot.com
         path_translation: APPEND_PATH_TO_ADDRESS
 
       responses:
@@ -127,24 +118,24 @@ paths:
           schema:
             type: string
 
-  /stories/storage/uploadUrl:
+  /storage/uploadUrl:
     get:
       summary: Get upload URL
       operationId: getStoryUploadUrl
       x-google-backend:
-        address: https://stories-dot-cloud-398911.lm.r.appspot.com/storage/uploadUrl
+        address: https://stories-dot-cloud-final-402019.oa.r.appspot.com/storage/uploadUrl
       responses:
         '200':
           description: A successful response
           schema:
             type: string
 
-  /stories/storage/download:
+  /storage/download:
     get:
       summary: Download a file
       operationId: download
       x-google-backend:
-        address: https://stories-dot-cloud-398911.lm.r.appspot.com/storage/download
+        address: https://stories-dot-cloud-final-402019.oa.r.appspot.com/storage/download
       responses:
         '200':
           description: A successful response
@@ -155,7 +146,7 @@ paths:
       summary: manage users
       operationId: users
       x-google-backend:
-        address: https://users-dot-cloud-398911.lm.r.appspot.com/users
+        address: https://users-dot-cloud-final-402019.oa.r.appspot.com/users
       responses:
         '200':
           description: A successful response
@@ -167,7 +158,7 @@ paths:
       summary: Search users
       operationId: searchUsers
       x-google-backend:
-        address: https://users-dot-cloud-398911.lm.r.appspot.com/users/search
+        address: https://users-dot-cloud-final-402019.oa.r.appspot.com/users/search
       responses:
         '200':
           description: A successful response
@@ -179,19 +170,17 @@ paths:
       summary: Get contacts of a user
       operationId: getContactsOfUser
       x-google-backend:
-        address: https://users-dot-cloud-398911.lm.r.appspot.com/users/contacts
+        address: https://users-dot-cloud-final-402019.oa.r.appspot.com/users/contacts
       responses:
         '200':
           description: A successful response
           schema:
             type: string
-
-  /users/contacts/add:
     patch:
       summary: Add a contact
       operationId: addContact
       x-google-backend:
-        address: https://users-dot-cloud-398911.lm.r.appspot.com/users/contacts/add
+        address: https://users-dot-cloud-final-402019.oa.r.appspot.com/users/contacts
       responses:
         '200':
           description: A successful response
@@ -203,7 +192,7 @@ paths:
       summary: Look up a user
       operationId: lookUpUser
       x-google-backend:
-        address: https://users-dot-cloud-398911.lm.r.appspot.com/users/lookup
+        address: https://users-dot-cloud-final-402019.oa.r.appspot.com/users/lookup
       responses:
         '200':
           description: A successful response
@@ -215,7 +204,7 @@ paths:
       summary: Sign up a user
       operationId: signUp
       x-google-backend:
-        address: https://users-dot-cloud-398911.lm.r.appspot.com/users/signup
+        address: https://users-dot-cloud-final-402019.oa.r.appspot.com/users/signup
       responses:
         '200':
           description: A successful response
@@ -223,23 +212,13 @@ paths:
             type: string
 
 
-  /messagereader:
-    get:
-      summary: manage reading messages
-      operationId: messagereader
-      x-google-backend:
-        address: https://messagereader-dot-cloud-398911.lm.r.appspot.com/
-      responses:
-        '200':
-          description: A successful response
-          schema:
-            type: string
+
   /messagereader/messages:
     get:
       summary: manage reading messages
       operationId: getmessagereader
       x-google-backend:
-        address: https://messagereader-dot-cloud-398911.lm.r.appspot.com/messages/
+        address: https://messagereader-dot-cloud-final-402019.oa.r.appspot.com/messages
       responses:
         '200':
           description: A successful response
@@ -250,7 +229,7 @@ paths:
         summary: Get all messages
         operationId: getAllMessages
         x-google-backend:
-          address: https://messagereader-dot-cloud-398911.lm.r.appspot.com/messages/all
+          address: https://messagereader-dot-cloud-final-402019.oa.r.appspot.com/messages/all
         responses:
           '200':
             description: A successful response
@@ -261,19 +240,19 @@ paths:
         summary: Delete all messages
         operationId: deleteAllMessages
         x-google-backend:
-          address: https://messagereader-dot-cloud-398911.lm.r.appspot.com/messages/all
+          address: https://messagereader-dot-cloud-final-402019.oa.r.appspot.com/messages/all
         responses:
           '200':
             description: A successful response
             schema:
               type: string
 
-  /messagereader/messagesCleanUp:
+  /messagesCleanUp:
       post:
         summary: Cleanup messages
         operationId: cleanupMessages
         x-google-backend:
-          address: https://messagereader-dot-cloud-398911.lm.r.appspot.com/messagesCleanUp
+          address: https://messagereader-dot-cloud-final-402019.oa.r.appspot.com/messagesCleanUp
         responses:
           '200':
             description: A successful response
@@ -285,19 +264,19 @@ paths:
       summary: manage sending messages
       operationId: messagesender
       x-google-backend:
-        address: https://messagesender-dot-cloud-398911.lm.r.appspot.com/
+        address: https://messagesender-dot-cloud-final-402019.oa.r.appspot.com
       responses:
         '200':
           description: A successful response
           schema:
             type: string
 
-  /messagesender/chats:
+  /chats:
     get:
       summary: Get all chats
       operationId: findAllChats
       x-google-backend:
-        address: https://messagesender-dot-cloud-398911.lm.r.appspot.com/chats
+        address: https://messagesender-dot-cloud-final-402019.oa.r.appspot.com/chats
       responses:
         '200':
           description: A successful response
@@ -308,7 +287,7 @@ paths:
       summary: Create a new chat
       operationId: addChat
       x-google-backend:
-        address: https://messagesender-dot-cloud-398911.lm.r.appspot.com/chats
+        address: https://messagesender-dot-cloud-final-402019.oa.r.appspot.com/chats
       responses:
         '200':
           description: A successful response
@@ -317,7 +296,7 @@ paths:
       summary: Delete all chats
       operationId: deleteAllChats
       x-google-backend:
-        address: https://messagesender-dot-cloud-398911.lm.r.appspot.com/chats
+        address: https://messagesender-dot-cloud-final-402019.oa.r.appspot.com/chats
       responses:
         '200':
           description: A successful response
@@ -327,7 +306,7 @@ paths:
       summary: Get a chat by ID
       operationId: findChat
       x-google-backend:
-        address: https://messagesender-dot-cloud-398911.lm.r.appspot.com
+        address: https://messagesender-dot-cloud-final-402019.oa.r.appspot.com
         path_translation: APPEND_PATH_TO_ADDRESS
       parameters:
         - name: id
@@ -342,7 +321,7 @@ paths:
       summary: Delete a chat by ID
       operationId: deleteChatById
       x-google-backend:
-        address: https://messagesender-dot-cloud-398911.lm.r.appspot.com
+        address: https://messagesender-dot-cloud-final-402019.oa.r.appspot.com
         path_translation: APPEND_PATH_TO_ADDRESS
       parameters:
         - name: id
@@ -358,7 +337,7 @@ paths:
       summary: Create a new message
       operationId: createMessage
       x-google-backend:
-        address: https://messagesender-dot-cloud-398911.lm.r.appspot.com/messages
+        address: https://messagesender-dot-cloud-final-402019.oa.r.appspot.com/messages
       responses:
         '200':
           description: Message published
@@ -368,7 +347,7 @@ paths:
       summary: Get all elements from Redis
       operationId: getAllElementsFromRedis
       x-google-backend:
-        address: https://messagesender-dot-cloud-398911.lm.r.appspot.com/messages/redis
+        address: https://messagesender-dot-cloud-final-402019.oa.r.appspot.com/messages/redis
       responses:
         '200':
           description: A successful response
@@ -378,7 +357,7 @@ paths:
       summary: Test
       operationId: test
       x-google-backend:
-        address: https://messagesender-dot-cloud-398911.lm.r.appspot.com/messages/test
+        address: https://messagesender-dot-cloud-final-402019.oa.r.appspot.com/messages/test
       responses:
         '200':
           description: A successful response
@@ -388,7 +367,7 @@ paths:
       summary: manage storing messages
       operationId: messagestore
       x-google-backend:
-        address: https://messagestore-dot-cloud-398911.lm.r.appspot.com/
+        address: https://messagestore-dot-cloud-final-402019.oa.r.appspot.com
       responses:
         '200':
           description: A successful response
@@ -400,7 +379,7 @@ paths:
       summary: Subscribe to a topic
       operationId: subscribeToTopic
       x-google-backend:
-        address: https://messagestore-dot-cloud-398911.lm.r.appspot.com/messages
+        address: https://messagestore-dot-cloud-final-402019.oa.r.appspot.com/messages
       responses:
         '200':
           description: Subscribed to topic
@@ -408,7 +387,7 @@ paths:
       summary: Get all messages
       operationId: getALL
       x-google-backend:
-        address: https://messagestore-dot-cloud-398911.lm.r.appspot.com/messages
+        address: https://messagestore-dot-cloud-final-402019.oa.r.appspot.com/messages
       responses:
         '200':
           description: A successful response
@@ -418,7 +397,7 @@ paths:
       summary: Health check for the Media Service
       operationId: healthCheck
       x-google-backend:
-        address: https://media-service-dot-cloud-398911.lm.r.appspot.com/media
+        address: https://media-service-dot-cloud-final-402019.oa.r.appspot.com/media
       responses:
         '200':
           description: Media Service is up and running
@@ -430,7 +409,7 @@ paths:
       summary: Generate an upload URL for media
       operationId: getUploadUrl
       x-google-backend:
-        address: https://media-service-dot-cloud-398911.lm.r.appspot.com/media/generate-upload-url
+        address: https://media-service-dot-cloud-final-402019.oa.r.appspot.com/media/generate-upload-url
       responses:
         '200':
           description: A successful response
@@ -442,7 +421,7 @@ paths:
       summary: Check if media exists
       operationId: checkExistence
       x-google-backend:
-        address: https://media-service-dot-cloud-398911.lm.r.appspot.com/media/check-existence
+        address: https://media-service-dot-cloud-final-402019.oa.r.appspot.com/media/check-existence
       responses:
         '200':
           description: A successful response
