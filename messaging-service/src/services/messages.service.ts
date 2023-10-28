@@ -24,9 +24,9 @@ export class MessageService {
     });
 
     this.redisClient = new Redis({
-      host:"bsz2lvjajppi8cmo9frh-redis.services.clever-cloud.com",
-      port: 3154,
-      password: "7xFUkj6zetIM7P1oPhs",
+      host:process.env.REDIS_HOST,
+      port: parseInt(process.env.REDIS_PORT),
+      password: process.env.REDIS_PASSWORD,
     });
   }
 
@@ -126,7 +126,7 @@ async test1000Messages() {
         throw new NotFoundException("user not found exception");
       }
       */
-      const topicName = 'projects/cloud-final-402019/topics/messaging_queue';
+      const topicName = process.env.PUBSUB_TOPIC_NAME;
       
       const timestamp = new Date().getTime(); 
       const random = Math.random().toString(36).substring(2, 10); 

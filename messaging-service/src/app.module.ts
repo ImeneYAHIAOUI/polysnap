@@ -8,20 +8,23 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
 import { User } from './entities/user.entity';
 import { UserProxyService } from './services/user.proxy.service';
+import { join } from 'path';
+
 
 @Module({
   imports: [ HttpModule,
     TypeOrmModule.forFeature([Chat, User]),
+
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: '/cloudsql/cloud-final-402019:europe-west9:polysnap',
-      port: 5432,
-      username: 'user',
-      password: 'storypassword',
-      database: 'message',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      host: process.env.POSTGRESQL_ADDON_HOST,
+      port: parseInt(process.env.POSTGRESQL_ADDON_PORT),
+      username: process.env.POSTGRESQL_ADDON_USER,
+      password: process.env.POSTGRESQL_ADDON_PASSWORD,
+      database: process.env.POSTGRESQL_ADDON_DB,
+      entities: [join(__dirname, '**/**.entity{.ts,.js}')],
       synchronize: true,
-    }),],
+    })],
   providers: [MessageService, ChatService, UserProxyService],
   controllers: [MessageController, ChatController], // Include your service here
 })
