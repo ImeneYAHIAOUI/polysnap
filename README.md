@@ -30,6 +30,15 @@ gcloud sql instances create [INSTANCE_NAME] \
     --root-password=[PASSWORD]
 ```
 Replace `[INSTANCE_NAME]` with your instance name, `[CPU]` with the number of CPUs, `[MEMORY]` with the memory size, `[REGION]` with the region and `[ZONE]` with the zone. `[PASSWORD]` is the password for the root user.
+ 
+Create the needed databases:
+
+```bash
+gcloud sql databases create userDB --instance=[INSTANCE_NAME]
+```
+```bash
+gcloud sql databases create storyDB --instance=[INSTANCE_NAME]
+```
 
 ### Cloud Storage
 
