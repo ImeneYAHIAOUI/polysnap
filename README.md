@@ -24,7 +24,6 @@ It is a project for the course "Cloud Computing" at Polytech Nice Sophia.
    gcloud config set project [PROJECT_ID]
    ```
    
-   Replace `[PROJECT_ID]` with your project ID.
 
 ## Create Google Cloud instances
 
