@@ -1,3 +1,7 @@
+# PolySnap
+
+PolySnap is a social media platform for sharing stories and sending ephemeral messages with attachments.
+It is a project for the course "Cloud Computing" at Polytech Nice Sophia.
 
 # Cloud Environment Setup Guide
 ## Prerequisites
