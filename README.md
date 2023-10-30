@@ -39,6 +39,9 @@ gcloud sql databases create userDB --instance=[INSTANCE_NAME]
 ```bash
 gcloud sql databases create storyDB --instance=[INSTANCE_NAME]
 ```
+```bash
+gcloud sql databases create messageDB --instance=[INSTANCE_NAME]
+```
 
 ### Cloud Storage
 
