@@ -111,7 +111,7 @@ Run the following command in the root of the project to deploy all services:
 
 Build the frontend with the command `npm run build` in the `frontend` repository.
 
-Create a new bucket in your Cloud Storage instance and upload the contents of the `build` folder to the bucket.
+Create a new bucket in your Cloud Storage instance and upload the `build` folder to the bucket.
 upload the 'app.yaml' file to the bucket.
 
 Go to [Google Cloud Console](https://console.cloud.google.com) and select your project. 
