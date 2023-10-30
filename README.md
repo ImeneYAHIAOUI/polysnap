@@ -8,13 +8,29 @@
 4. **Authentication**: Log in to your Google Cloud account via the command line using the `gcloud auth login` command.
 
 ## Create a Google Cloud Project
-1. **Create a new project**: Create a new project by running the following command in the command line: `gcloud projects create [PROJECT_ID] --name=[PROJECT_NAME]`. Replace `[PROJECT_ID]` with your project ID and `[PROJECT_NAME]` with your project name.
-2. **Set the project ID**: Set the project ID by running the following command in the command line: `gcloud config set project [PROJECT_ID]`. Replace `[PROJECT_ID]` with your project ID.
+1. **Create a new project**: Create a new project by running the following command in the command line :
+   ```bash
+   gcloud projects create [PROJECT_ID] --name=[PROJECT_NAME]
+   ```
+   
+    Replace `[PROJECT_ID]` with your project ID and `[PROJECT_NAME]` with your project name.
+   
+2. **Set the project ID**: Set the project ID by running the following command in the command line:
+   ```bash
+   gcloud config set project [PROJECT_ID]
+   ```
+   
+   Replace `[PROJECT_ID]` with your project ID.
 
 ## Create Google Cloud instances
 
 ### App Engine
-Create an App Engine instance by specifying the region: `gcloud app create --region=[REGION]`. Replace `[REGION]` with your region.
+Create an App Engine instance by specifying the region:
+
+```bash
+gcloud app create --region=[REGION]
+```
+Replace `[REGION]` with your region.
 
 ### Cloud SQL
 
