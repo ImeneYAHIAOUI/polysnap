@@ -74,3 +74,33 @@ gcloud endpoints services deploy gateway/openapi2-appengine.yaml --project=[PROJ
 Replace `[PROJECT_ID]` with your project ID.
 
 ## Set Configuration Variables
+
+Copy the `credentials.yaml` file from the root of the project to the repositories `users-service`, `stories-service`, `media-service`, `messaging-service`, `messaging-reader-service` and `messaging-store-service`.
+Replace the values with your own.
+
+In the `.env` file of the `frontend` repository, replace `REACT_APP_POLYSNAP_API_URL` with the URL of your API Gateway instance and `REACT_APP_BUCKET_URL` with the URL of your Cloud Storage bucket.
+
+## Deploy backend services
+
+Run the following command in the root of the project to deploy all services:
+
+```bash
+./deploy-backend.sh
+```
+
+## Deploy the static frontend website
+
+Build the frontend with the command `npm run build` in the `frontend` repository.
+
+Create a new bucket in your Cloud Storage instance and upload the contents of the `build` folder to the bucket.
+upload the 'app.yaml' file to the bucket.
+
+Go to [Google Cloud Console](https://console.cloud.google.com) and select your project. 
+Open the active cloud shell and run the following command to deploy the website:
+
+```bash
+  mkdir front-end
+  gsutil rsync -r gs://[BUCKET-NAME] ./front-end
+  cd front-end
+  gcloud app deploy
+```
