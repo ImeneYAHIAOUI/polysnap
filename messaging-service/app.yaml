@@ -5,4 +5,4 @@ automatic_scaling:
   min_instances: 1
   max_instances: 10
 includes:
-  - credentials.yaml
+  - ../credentials.yaml

@@ -10,14 +10,9 @@ import { UserProxyService } from './user.proxy.service';
 @Injectable()
 export class MessageService {
 
-
-
   private pubsub: PubSub;
   private redisClient: Redis;
   
-  
-
-
   constructor(private  chatService: ChatService,
     private  userService : UserProxyService) {
     this.pubsub = new PubSub({
@@ -150,6 +145,7 @@ async test1000Messages() {
       */
 
     const now = new Date();
+
     const utcNow = new Date(Date.UTC(
         now.getUTCFullYear(),
         now.getUTCMonth(),
@@ -159,19 +155,20 @@ async test1000Messages() {
         now.getUTCSeconds(),
         now.getUTCMilliseconds()
     ));
-      const topicName = process.env.PUBSUB_TOPIC_NAME;
-      
+
+      const topicName = process.env.PUB_SUB_TOPIC;
+
       const timestamp = utcNow.getTime();
       const random = Math.random().toString(36).substring(2, 10); 
 
       const uniqueKey = `${timestamp}-${random}`;
       this.redisClient.set(uniqueKey, JSON.stringify(message));
   
-
       // Publish the message
       const messageId = await this.pubsub
         .topic(topicName)
         .publishJSON(message);
+
 
       console.log(`Message ${messageId} published.`);
       console.log('Message published successfully.');

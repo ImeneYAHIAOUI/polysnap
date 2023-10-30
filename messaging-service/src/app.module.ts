@@ -21,7 +21,7 @@ import { join } from 'path';
       port: parseInt(process.env.POSTGRESQL_ADDON_PORT),
       username: process.env.POSTGRESQL_ADDON_USER,
       password: process.env.POSTGRESQL_ADDON_PASSWORD,
-      database: process.env.POSTGRESQL_ADDON_DB,
+      database: process.env.POSTGRESQL_ADDON_MESSAGE_DB,
       entities: [join(__dirname, '**/**.entity{.ts,.js}')],
       synchronize: true,
     })],
