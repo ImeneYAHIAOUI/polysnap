@@ -86,9 +86,6 @@ Replace `[TOPIC_NAME]` with your topic name and `[REGION]` with your region.
 
 Proceed to the following link: [Create Addon](https://console.clever-cloud.com/users/me/addons/new) . Once there, select the Redis database service, specify the desired database size, and choose your preferred region. Finally, confirm your selection to complete the process.
 
-```bash
-gsutil mb -l [REGION] gs://[BUCKET_NAME]
-```
 ### API Gateway
 
 Create an API Gateway instance with a specific region:
