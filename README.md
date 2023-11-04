@@ -82,10 +82,6 @@ Create a Pub/Sub topic with a specific region:
 
 Replace `[TOPIC_NAME]` with your topic name and `[REGION]` with your region.
 
-### Clever Cloud Redis
-
-Proceed to the following link: [Create Addon](https://console.clever-cloud.com/users/me/addons/new) . Once there, select the Redis database service, specify the desired database size, and choose your preferred region. Finally, confirm your selection to complete the process.
-
 ### API Gateway
 
 Create an API Gateway instance with a specific region:
@@ -95,6 +91,10 @@ gcloud endpoints services deploy gateway/openapi2-appengine.yaml --project=[PROJ
 ```
 
 Replace `[PROJECT_ID]` with your project ID.
+
+## Clever Cloud Redis
+
+Proceed to the following link: [Create Addon](https://console.clever-cloud.com/users/me/addons/new) . Once there, select the Redis database service, specify the desired database size, and choose your preferred region. Finally, confirm your selection to complete the process.
 
 ## Set Configuration Variables
 
