@@ -83,7 +83,7 @@ Create a Pub/Sub topic with a specific region:
 Replace `[TOPIC_NAME]` with your topic name and `[REGION]` with your region.
 
 ### API Gateway
-Replace the links in the file gateway/openapi2-appengine.yaml with your application's links
+Replace the links in the file `gateway/openapi2-appengine.yaml` with your application's links
 
 Create an API Gateway instance with a specific region:
 
